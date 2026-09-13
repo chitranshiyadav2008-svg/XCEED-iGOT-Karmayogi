@@ -4,6 +4,8 @@ import PersonalisedLearningPath from './pages/personalisedLearningPath.jsx'
 import SkillAssessment from './pages/skillAssessment.jsx'
 import SkillGapAnalysis from './pages/skillGapAnalysis.jsx'
 import SkillTwinNavigator from './pages/skillTwinNavigator.jsx'
+import SkillTwinNavigator from './pages/skillTwinNavigator.jsx'
+import AdaptiveQuiz from './pages/adaptiveQuiz.jsx'
 
 function App() {
   const path = window.location.pathname
@@ -26,6 +28,10 @@ function App() {
 
   if (path === '/skill-twin-navigator') {
     return <SkillTwinNavigator />
+  }
+
+  if (path === '/adaptive-quiz') {
+    return <AdaptiveQuiz />
   }
 
   return <Onboarding />
