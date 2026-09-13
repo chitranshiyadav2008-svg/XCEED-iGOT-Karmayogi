@@ -24,32 +24,26 @@ const features = [
   {
     icon: "✦",
     title: "AI Skill Twin",
-    text: "A living digital model of your competencies, updated with every assessment and course you finish.",
+    description:
+      "Build a dynamic digital representation of your skills, competencies and learning progress.",
+  },
+  {
+    icon: "◈",
+    title: "Skill Gap Analysis",
+    description:
+      "Identify the competencies you need to strengthen for your current role.",
   },
   {
     icon: "◎",
-    title: "Role Readiness Score",
-    text: "See exactly how prepared you are for your current designation and the next one up.",
+    title: "Personalised Learning",
+    description:
+      "Get an adaptive learning path based on your individual skill gaps and goals.",
   },
   {
-    icon: "⌁",
-    title: "Gap Detection",
-    text: "Compare your proficiency against the official competency framework for your role.",
-  },
-  {
-    icon: "→",
-    title: "Learning Pathways",
-    text: "Ordered, time-boxed recommendations so you always know what to learn next.",
-  },
-  {
-    icon: "◫",
-    title: "Progress Analytics",
-    text: "Track growth over time and export department-level readiness summaries.",
-  },
-  {
-    icon: "◆",
-    title: "Built for Government",
-    text: "Employee-ID based access, department mapping and privacy-first data handling.",
+    icon: "✓",
+    title: "Continuous Assessment",
+    description:
+      "Measure your progress continuously through adaptive assessments and quizzes.",
   },
 ];
 
@@ -57,514 +51,565 @@ const steps = [
   {
     number: "01",
     title: "Create your profile",
-    text: "Department, role and years of experience.",
+    description:
+      "Tell us about your role, responsibilities and current experience.",
   },
   {
     number: "02",
-    title: "Map your skills",
-    text: "Self-rate proficiency, then take a short assessment.",
+    title: "Assess your skills",
+    description:
+      "Complete a short AI-powered assessment to understand your current competencies.",
   },
   {
     number: "03",
-    title: "Grow with guidance",
-    text: "Follow your pathway and watch readiness rise.",
+    title: "Discover your skill gaps",
+    description:
+      "Our AI identifies the skills that need improvement for your target role.",
+  },
+  {
+    number: "04",
+    title: "Follow your learning path",
+    description:
+      "Learn through a personalised pathway and track your progress over time.",
   },
 ];
 
 function SkillTwinNavigator() {
+  const goToAuth = () => {
+    window.location.href = "/auth";
+  };
+
+  const scrollToSection = (sectionId) => {
+    document.getElementById(sectionId)?.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div className="navigator-page">
 
-      {/* NAVBAR */}
-      <nav className="navigator-navbar">
+      {/* =========================
+          NAVBAR
+      ========================= */}
 
-        <div className="navigator-brand">
+      <header className="navigator-navbar">
 
+        <button
+          className="navigator-brand"
+          onClick={() => (window.location.href = "/")}
+        >
           <div className="navigator-logo">
-            ✦
+            <span>◉</span>
           </div>
 
-          <div>
+          <div className="navigator-brand-text">
             <div className="navigator-brand-name">
               SkillSaarthi
             </div>
 
-            <div className="navigator-brand-sub">
-              Powered by Xceed
+            <div className="navigator-powered">
+              POWERED BY XCEED
             </div>
           </div>
+        </button>
 
-        </div>
-
-        <div className="navigator-nav-links">
-
-          <a href="#navigator-features">
+        <nav className="navigator-nav-links">
+          <button
+            onClick={() => scrollToSection("features")}
+          >
             Features
-          </a>
+          </button>
 
-          <a href="#navigator-how">
+          <button
+            onClick={() => scrollToSection("how-it-works")}
+          >
             How it works
-          </a>
+          </button>
 
-          <a href="#navigator-demo">
+          <button
+            onClick={() => scrollToSection("demo")}
+          >
             Demo
-          </a>
+          </button>
+        </nav>
 
-        </div>
+        <div className="navigator-nav-actions">
 
-        <div className="navigator-nav-buttons">
-
-          <button className="navigator-signin">
+          <button
+            className="navigator-signin"
+            onClick={goToAuth}
+          >
             Sign in
           </button>
 
-          <button className="navigator-start">
+          <button
+            className="navigator-get-started"
+            onClick={goToAuth}
+          >
             Get started
           </button>
 
         </div>
 
-      </nav>
+      </header>
 
+      {/* =========================
+          HERO
+      ========================= */}
 
-      {/* HERO */}
-      <section className="navigator-hero">
+      <main>
 
-        <div className="navigator-hero-content">
+        <section className="navigator-hero">
 
-          <div className="navigator-label">
-            <span></span>
-            SMART INDIA HACKATHON PROTOTYPE
-          </div>
+          <div className="navigator-hero-content">
 
-          <h1>
-            Know Your Skills.
-            <br />
-
-            Discover Your Gaps.
-            <br />
-
-            <em>Learn What Matters.</em>
-          </h1>
-
-          <p className="navigator-hero-description">
-            SkillSaarthi is your AI-powered companion for role-based
-            competency development. It builds a skill twin of every
-            officer, benchmarks it against the competency framework for
-            their designation, and turns the difference into a clear
-            learning plan.
-          </p>
-
-          <div className="navigator-hero-buttons">
-
-            <button className="navigator-primary-button">
-              Try the demo dashboard
-              <span>→</span>
-            </button>
-
-            <button className="navigator-secondary-button">
-              Create an account
-            </button>
-
-          </div>
-
-
-          {/* STATS */}
-          <div className="navigator-stats">
-
-            <div className="navigator-stat">
-              <strong>7</strong>
-              <span>core competencies</span>
+            <div className="navigator-badge">
+              <span>✦</span>
+              AI-Powered Learning Platform
             </div>
 
-            <div className="navigator-stat">
-              <strong>3</strong>
-              <span>proficiency levels</span>
+            <h1>
+              Your skills.
+              <br />
+              <span>Your digital twin.</span>
+            </h1>
+
+            <p className="navigator-hero-description">
+              SkillSaarthi creates an AI-powered Skill Twin that
+              understands your capabilities, identifies skill gaps
+              and builds a personalised learning journey for your
+              role.
+            </p>
+
+            <div className="navigator-hero-actions">
+
+              <button
+                className="navigator-primary-button"
+                onClick={goToAuth}
+              >
+                Try the demo dashboard
+                <span>→</span>
+              </button>
+
+              <button
+                className="navigator-secondary-button"
+                onClick={goToAuth}
+              >
+                Create an account
+              </button>
+
             </div>
 
-            <div className="navigator-stat">
-              <strong>1</strong>
-              <span>readiness score</span>
+            <div className="navigator-trust">
+              <span>✓</span>
+              Built for India's civil servants
+              <span className="trust-dot">•</span>
+              Powered by AI
             </div>
 
           </div>
 
-        </div>
+          {/* Skill Twin Preview */}
 
+          <div className="navigator-preview-wrapper">
 
-        {/* SKILL TWIN PREVIEW */}
-        <div className="navigator-preview-area">
+            <div className="navigator-preview-card">
 
-          <div className="navigator-preview">
+              <div className="preview-header">
 
-            <div className="navigator-preview-header">
+                <div>
+                  <span className="preview-label">
+                    YOUR AI SKILL TWIN
+                  </span>
 
-              <strong>
-                Skill twin preview
-              </strong>
-
-              <span>
-                <i></i>
-                Live
-              </span>
-
-            </div>
-
-
-            <div className="navigator-role">
-
-              <div>
-
-                <small>
-                  ROLE
-                </small>
-
-                <strong>
-                  Statistical Investigator
-                </strong>
-
-              </div>
-
-              <div className="navigator-readiness">
-
-                <small>
-                  READINESS
-                </small>
-
-                <strong>
-                  72%
-                </strong>
-
-              </div>
-
-            </div>
-
-
-            <div className="navigator-skills">
-
-              {competencies.map((skill) => (
-
-                <div
-                  className="navigator-skill"
-                  key={skill.name}
-                >
-
-                  <div className="navigator-skill-top">
-
-                    <span>
-                      {skill.name}
-                    </span>
-
-                    <strong>
-                      {skill.score}%
-                    </strong>
-
-                  </div>
-
-                  <div className="navigator-skill-track">
-
-                    <div
-                      style={{
-                        width: `${skill.score}%`,
-                      }}
-                    />
-
-                  </div>
-
+                  <h3>
+                    Statistical Investigator
+                  </h3>
                 </div>
 
-              ))}
+                <div className="preview-status">
+                  <span></span>
+                  Active
+                </div>
 
-            </div>
-
-
-            <div className="navigator-preview-footer">
-
-              <span>
-                AI Skill Twin
-              </span>
-
-              <span>
-                Updated today
-              </span>
-
-            </div>
-
-          </div>
-
-
-          {/* FLOATING CARD 1 */}
-          <div className="navigator-floating-card navigator-floating-one">
-
-            <div className="navigator-floating-icon">
-              ✦
-            </div>
-
-            <div>
-              <strong>
-                AI Skill Twin
-              </strong>
-
-              <small>
-                Continuously evolving
-              </small>
-            </div>
-
-          </div>
-
-
-          {/* FLOATING CARD 2 */}
-          <div className="navigator-floating-card navigator-floating-two">
-
-            <strong>
-              +12%
-            </strong>
-
-            <small>
-              Readiness growth
-            </small>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      {/* FEATURES */}
-      <section
-        className="navigator-features"
-        id="navigator-features"
-      >
-
-        <div className="navigator-section-intro">
-
-          <span>
-            BUILT FOR COMPETENCY DEVELOPMENT
-          </span>
-
-          <h2>
-            Everything a competency cell needs
-          </h2>
-
-          <p>
-            Designed with departmental training officers, built around
-            the way government roles actually progress.
-          </p>
-
-        </div>
-
-
-        <div className="navigator-feature-grid">
-
-          {features.map((feature) => (
-
-            <div
-              className="navigator-feature-card"
-              key={feature.title}
-            >
-
-              <div className="navigator-feature-icon">
-                {feature.icon}
               </div>
 
-              <h3>
-                {feature.title}
-              </h3>
+              <div className="preview-readiness">
 
-              <p>
-                {feature.text}
-              </p>
+                <div className="readiness-circle">
+                  <div className="readiness-number">
+                    72%
+                  </div>
 
-              <span className="navigator-feature-arrow">
-                →
-              </span>
+                  <div className="readiness-text">
+                    Role readiness
+                  </div>
+                </div>
+
+                <div className="readiness-content">
+                  <span className="preview-small-label">
+                    OVERALL READINESS
+                  </span>
+
+                  <strong>
+                    Good foundation
+                  </strong>
+
+                  <p>
+                    Your profile shows strong analytical
+                    capabilities with opportunities to grow
+                    in survey design and statistical methods.
+                  </p>
+                </div>
+
+              </div>
+
+              <div className="preview-divider"></div>
+
+              <div className="preview-skills-header">
+                <span>Core competencies</span>
+                <span>Score</span>
+              </div>
+
+              <div className="preview-skills">
+
+                {competencies.map((skill) => (
+                  <div
+                    className="preview-skill"
+                    key={skill.name}
+                  >
+                    <div className="preview-skill-name">
+                      {skill.name}
+                    </div>
+
+                    <div className="preview-skill-bar">
+                      <div
+                        className="preview-skill-fill"
+                        style={{
+                          width: `${skill.score}%`,
+                        }}
+                      ></div>
+                    </div>
+
+                    <div className="preview-score">
+                      {skill.score}%
+                    </div>
+                  </div>
+                ))}
+
+              </div>
+
+              <div className="preview-insight">
+
+                <div className="insight-icon">
+                  ✦
+                </div>
+
+                <div>
+                  <strong>
+                    AI insight
+                  </strong>
+
+                  <p>
+                    Focus on Survey Design next to improve
+                    your role readiness by an estimated 8%.
+                  </p>
+                </div>
+
+              </div>
 
             </div>
-
-          ))}
-
-        </div>
-
-      </section>
-
-
-      {/* HOW IT WORKS */}
-      <section
-        className="navigator-how"
-        id="navigator-how"
-      >
-
-        <div className="navigator-how-header">
-
-          <div>
-
-            <span>
-              SIMPLE. PERSONAL. CONTINUOUS.
-            </span>
-
-            <h2>
-              How it works
-            </h2>
 
           </div>
 
-          <p>
-            From your current skills to a clear development path,
-            SkillSaarthi closes the loop between assessment and learning.
-          </p>
+        </section>
 
-        </div>
+        {/* =========================
+            FEATURES
+        ========================= */}
 
+        <section
+          id="features"
+          className="navigator-features-section"
+        >
 
-        <div className="navigator-steps">
+          <div className="navigator-section-heading">
 
-          {steps.map((step, index) => (
-
-            <div
-              className="navigator-step"
-              key={step.number}
-            >
-
-              <div className="navigator-step-number">
-                {step.number}
-              </div>
-
-              {index < steps.length - 1 && (
-                <div className="navigator-step-line"></div>
-              )}
-
-              <h3>
-                {step.title}
-              </h3>
-
-              <p>
-                {step.text}
-              </p>
-
+            <div className="navigator-section-badge">
+              WHAT MAKES SKILLSAARTHI DIFFERENT
             </div>
 
-          ))}
-
-        </div>
-
-      </section>
-
-
-      {/* DEMO */}
-      <section
-        className="navigator-demo"
-        id="navigator-demo"
-      >
-
-        <div className="navigator-demo-card">
-
-          <div className="navigator-demo-content">
-
-            <span>
-              EXPERIENCE THE SKILL TWIN
-            </span>
-
             <h2>
-              See a Statistical Investigator's skill twin
+              One platform for your
+              <span> entire learning journey</span>
             </h2>
 
             <p>
-              Open the demo session — no sign-up, realistic competency
-              data, full dashboard.
+              From understanding your current skills to
+              continuously improving them, SkillSaarthi
+              keeps your learning journey personalised.
             </p>
 
-            <button>
+          </div>
+
+          <div className="navigator-feature-grid">
+
+            {features.map((feature) => (
+              <div
+                className="navigator-feature-card"
+                key={feature.title}
+              >
+
+                <div className="feature-icon">
+                  {feature.icon}
+                </div>
+
+                <h3>
+                  {feature.title}
+                </h3>
+
+                <p>
+                  {feature.description}
+                </p>
+
+              </div>
+            ))}
+
+          </div>
+
+        </section>
+
+        {/* =========================
+            HOW IT WORKS
+        ========================= */}
+
+        <section
+          id="how-it-works"
+          className="navigator-how-section"
+        >
+
+          <div className="navigator-section-heading">
+
+            <div className="navigator-section-badge">
+              HOW IT WORKS
+            </div>
+
+            <h2>
+              From profile to
+              <span> progress</span>
+            </h2>
+
+            <p>
+              A simple, AI-powered journey that adapts to
+              your skills and learning needs.
+            </p>
+
+          </div>
+
+          <div className="navigator-steps">
+
+            {steps.map((step, index) => (
+              <div
+                className="navigator-step"
+                key={step.number}
+              >
+
+                <div className="step-number">
+                  {step.number}
+                </div>
+
+                <div className="step-content">
+
+                  <h3>
+                    {step.title}
+                  </h3>
+
+                  <p>
+                    {step.description}
+                  </p>
+
+                </div>
+
+                {index < steps.length - 1 && (
+                  <div className="step-arrow">
+                    →
+                  </div>
+                )}
+
+              </div>
+            ))}
+
+          </div>
+
+        </section>
+
+        {/* =========================
+            DEMO
+        ========================= */}
+
+        <section
+          id="demo"
+          className="navigator-demo-section"
+        >
+
+          <div className="navigator-demo-content">
+
+            <div className="navigator-demo-badge">
+              EXPERIENCE THE PLATFORM
+            </div>
+
+            <h2>
+              See your Skill Twin
+              <br />
+              <span>in action</span>
+            </h2>
+
+            <p>
+              Explore a sample Statistical Investigator
+              profile and see how SkillSaarthi transforms
+              competency data into personalised learning
+              recommendations.
+            </p>
+
+            <button
+              className="navigator-demo-button"
+              onClick={goToAuth}
+            >
+              <span>▷</span>
               Continue with Demo
               <span>→</span>
             </button>
 
           </div>
 
-
           <div className="navigator-demo-visual">
 
-            <div className="navigator-demo-circle">
+            <div className="demo-glow"></div>
 
-              <div>
+            <div className="demo-mini-card">
 
+              <div className="mini-card-top">
                 <span>
-                  READINESS
+                  SKILLSAARTHI
                 </span>
 
-                <strong>
-                  72%
-                </strong>
+                <span className="mini-live">
+                  ● LIVE
+                </span>
+              </div>
 
-                <small>
-                  Statistical Investigator
-                </small>
+              <div className="mini-profile">
+
+                <div className="mini-avatar">
+                  S
+                </div>
+
+                <div>
+                  <strong>
+                    Statistical Investigator
+                  </strong>
+
+                  <span>
+                    Ministry of Statistics
+                  </span>
+                </div>
+
+              </div>
+
+              <div className="mini-stat-grid">
+
+                <div>
+                  <strong>72%</strong>
+                  <span>Readiness</span>
+                </div>
+
+                <div>
+                  <strong>4</strong>
+                  <span>Skill gaps</span>
+                </div>
+
+                <div>
+                  <strong>13h</strong>
+                  <span>Learning path</span>
+                </div>
 
               </div>
 
             </div>
 
-
-            <div className="navigator-mini-card navigator-mini-one">
-
-              Data Analysis
-
-              <strong>
-                82%
-              </strong>
-
-            </div>
-
-
-            <div className="navigator-mini-card navigator-mini-two">
-
-              Survey Design
-
-              <strong>
-                54%
-              </strong>
-
-            </div>
-
           </div>
 
-        </div>
+        </section>
 
-      </section>
+        {/* =========================
+            FINAL CTA
+        ========================= */}
 
-
-      {/* FOOTER */}
-      <footer className="navigator-footer">
-
-        <div className="navigator-footer-brand">
-
-          <div className="navigator-logo">
-            ✦
-          </div>
+        <section className="navigator-final-cta">
 
           <div>
 
+            <div className="navigator-section-badge">
+              START YOUR JOURNEY
+            </div>
+
+            <h2>
+              Ready to build
+              <br />
+              your <span>Skill Twin?</span>
+            </h2>
+
+            <p>
+              Discover your strengths, close your skill gaps
+              and grow with a learning journey designed
+              specifically for you.
+            </p>
+
+          </div>
+
+          <button
+            className="navigator-final-button"
+            onClick={goToAuth}
+          >
+            Get started
+            <span>→</span>
+          </button>
+
+        </section>
+
+      </main>
+
+      {/* =========================
+          FOOTER
+      ========================= */}
+
+      <footer className="navigator-footer">
+
+        <div className="footer-brand">
+
+          <div className="footer-logo">
+            ◉
+          </div>
+
+          <div>
             <strong>
               SkillSaarthi
             </strong>
 
             <span>
-              AI competency development
+              Powered by XCEED
             </span>
-
           </div>
 
         </div>
 
+        <div className="footer-center">
+          AI-enabled personalised learning for
+          Karmayogis
+        </div>
 
-        <div className="navigator-footer-text">
-
-          SkillSaarthi · SIH prototype
-
-          <br />
-
-          Demo data only. Not an official government service.
-
+        <div className="footer-right">
+          SIH 2026 Prototype
         </div>
 
       </footer>

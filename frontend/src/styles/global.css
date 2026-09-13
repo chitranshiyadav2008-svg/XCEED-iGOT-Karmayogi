@@ -1,0 +1,145 @@
+```css
+/* ================================
+   XCEED - COMMON STYLES
+   ================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: Inter, Arial, sans-serif;
+  background: #f7f8fc;
+  color: #171927;
+}
+
+/* Main page background */
+
+.xceed-page {
+  min-height: 100vh;
+  width: 100%;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.10), transparent 30%),
+    radial-gradient(circle at 90% 20%, rgba(139, 92, 246, 0.08), transparent 30%),
+    linear-gradient(135deg, #f8f9ff 0%, #f4f5fb 50%, #fafaff 100%);
+  padding: 30px 50px;
+}
+
+/* Common container */
+
+.xceed-container {
+  width: 100%;
+  max-width: 1250px;
+  margin: 0 auto;
+}
+
+/* Common heading */
+
+.xceed-title {
+  font-size: 38px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.xceed-subtitle {
+  font-size: 17px;
+  color: #6b7280;
+  margin-bottom: 30px;
+}
+
+/* Common card */
+
+.xceed-card {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(99, 102, 241, 0.10);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 10px 35px rgba(30, 41, 59, 0.07);
+}
+
+/* Common buttons */
+
+.xceed-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 13px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.xceed-btn-primary {
+  background: #6366f1;
+  color: white;
+}
+
+.xceed-btn-primary:hover {
+  background: #4f46e5;
+  transform: translateY(-2px);
+}
+
+.xceed-btn-secondary {
+  background: white;
+  color: #4f46e5;
+  border: 1px solid #dfe1f5;
+}
+
+.xceed-btn-secondary:hover {
+  background: #f4f4ff;
+}
+
+/* Navigation */
+
+.xceed-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.xceed-logo {
+  font-size: 24px;
+  font-weight: 800;
+  color: #4f46e5;
+}
+
+/* Page navigation */
+
+.xceed-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 35px;
+  gap: 15px;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .xceed-page {
+    padding: 20px;
+  }
+
+  .xceed-title {
+    font-size: 30px;
+  }
+
+  .xceed-navigation {
+    flex-direction: column;
+  }
+
+  .xceed-btn {
+    width: 100%;
+  }
+}
+```
