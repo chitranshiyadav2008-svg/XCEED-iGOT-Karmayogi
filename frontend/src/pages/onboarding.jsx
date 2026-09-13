@@ -59,17 +59,40 @@ export default function Onboarding() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const isValid = validate();
-    if (isValid) {
-      setSubmitted(true);
-      // Hand-off point: this is where the app will navigate to the
-      // Assessment step once that page exists.
-      console.log("Onboarding profile submitted:", { ...EMPLOYEE, ...formData });
-    }
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
+  const isValid = validate();
+
+  if (!isValid) {
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/api/onboarding", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        employeeId: EMPLOYEE.employeeId,
+        primaryArea: formData.primaryArea,
+        responsibilities: formData.responsibilities,
+        strengthAreas: formData.strengthAreas,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setSubmitted(true);
+    } else {
+      console.error("Backend error:", data);
+    }
+  } catch (error) {
+    console.error("Could not connect to backend:", error);
+  }
+};
   return (
     <div className="onboarding-page">
       {/* Top navigation */}
