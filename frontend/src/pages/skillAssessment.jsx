@@ -1,33 +1,335 @@
 import React, { useState } from "react";
 import "./skillAssessment.css";
 
-const competencies = [
-  "Data Analysis",
-  "Statistical Methods",
-  "Data Visualization",
-  "Survey Design",
-  "Data Interpretation",
-  "Statistical Computing",
+const questions = [
+  {
+    id: 1,
+    competency: "Data Analysis",
+    question:
+      "Which step should generally come first when analysing a new dataset?",
+    options: [
+      "Create a final presentation",
+      "Understand and inspect the data",
+      "Delete all unusual values",
+      "Build a machine learning model",
+    ],
+    answer: 1,
+  },
+
+  {
+    id: 2,
+    competency: "Data Analysis",
+    question:
+      "Which measure is commonly used to represent the central tendency of numerical data?",
+    options: [
+      "Mean",
+      "Range",
+      "Variance",
+      "Standard deviation",
+    ],
+    answer: 0,
+  },
+
+  {
+    id: 3,
+    competency: "Statistical Methods",
+    question:
+      "What does a standard deviation primarily tell us?",
+    options: [
+      "The number of observations",
+      "How spread out the data is",
+      "The largest value in the dataset",
+      "The category with the highest frequency",
+    ],
+    answer: 1,
+  },
+
+  {
+    id: 4,
+    competency: "Statistical Methods",
+    question:
+      "Which statistical method can be used to study the relationship between two variables?",
+    options: [
+      "Correlation",
+      "Sorting",
+      "Data entry",
+      "Formatting",
+    ],
+    answer: 0,
+  },
+
+  {
+    id: 5,
+    competency: "Survey Design",
+    question:
+      "Which is an important characteristic of a well-designed survey question?",
+    options: [
+      "It should be clear and unbiased",
+      "It should always contain technical terms",
+      "It should contain multiple questions together",
+      "It should influence the respondent's answer",
+    ],
+    answer: 0,
+  },
+
+  {
+    id: 6,
+    competency: "Survey Design",
+    question:
+      "Why is sampling important in a survey?",
+    options: [
+      "To avoid collecting any data",
+      "To select a suitable group representing the population",
+      "To guarantee every answer is identical",
+      "To remove the need for analysis",
+    ],
+    answer: 1,
+  },
+
+  {
+    id: 7,
+    competency: "Data Visualization",
+    question:
+      "Which chart is generally suitable for comparing values across different categories?",
+    options: [
+      "Bar chart",
+      "Scatter plot only",
+      "Flowchart",
+      "Network diagram",
+    ],
+    answer: 0,
+  },
+
+  {
+    id: 8,
+    competency: "Data Visualization",
+    question:
+      "What is one important purpose of data visualization?",
+    options: [
+      "Make data harder to understand",
+      "Hide important patterns",
+      "Communicate patterns and insights clearly",
+      "Replace the need for accurate data",
+    ],
+    answer: 2,
+  },
+
+  {
+    id: 9,
+    competency: "Data Interpretation",
+    question:
+      "If a dataset shows that one value is much higher than most other values, it may be described as:",
+    options: [
+      "An outlier",
+      "A duplicate variable",
+      "A sample frame",
+      "A questionnaire",
+    ],
+    answer: 0,
+  },
+
+  {
+    id: 10,
+    competency: "Statistical Computing",
+    question:
+      "Which activity is an example of statistical computing?",
+    options: [
+      "Using software to calculate and analyse statistical results",
+      "Writing a document without data",
+      "Changing the computer wallpaper",
+      "Creating a presentation without analysis",
+    ],
+    answer: 0,
+  },
 ];
 
 function SkillAssessment() {
-  const [started, setStarted] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleStart = () => {
-    setStarted(true);
+  const question = questions[currentQuestion];
+
+  const selectAnswer = (optionIndex) => {
+    setAnswers({
+      ...answers,
+      [question.id]: optionIndex,
+    });
   };
 
-  const handleBack = () => {
-    window.history.back();
+  const handleNext = () => {
+    if (answers[question.id] === undefined) {
+      alert("Please select an answer before continuing.");
+      return;
+    }
+
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   };
+
+  const handlePrevious = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const calculateResults = () => {
+    let totalCorrect = 0;
+
+    const competencyResults = {};
+
+    questions.forEach((item) => {
+      const competency = item.competency;
+
+      if (!competencyResults[competency]) {
+        competencyResults[competency] = {
+          correct: 0,
+          total: 0,
+        };
+      }
+
+      competencyResults[competency].total += 1;
+
+      if (answers[item.id] === item.answer) {
+        totalCorrect += 1;
+        competencyResults[competency].correct += 1;
+      }
+    });
+
+    const competencyScores = {};
+
+    Object.keys(competencyResults).forEach((competency) => {
+      const result = competencyResults[competency];
+
+      competencyScores[competency] = Math.round(
+        (result.correct / result.total) * 100
+      );
+    });
+
+    const overallScore = Math.round(
+      (totalCorrect / questions.length) * 100
+    );
+
+    return {
+      overallScore,
+      totalCorrect,
+      totalQuestions: questions.length,
+      competencyScores,
+    };
+  };
+
+  const handleSubmit = () => {
+    if (answers[question.id] === undefined) {
+      alert("Please answer the current question before submitting.");
+      return;
+    }
+
+    const unansweredQuestions = questions.filter(
+      (item) => answers[item.id] === undefined
+    );
+
+    if (unansweredQuestions.length > 0) {
+      alert(
+        `Please answer all questions before submitting. ${unansweredQuestions.length} question(s) remaining.`
+      );
+      return;
+    }
+
+    const results = calculateResults();
+
+    localStorage.setItem(
+      "xceedSkillAssessmentResults",
+      JSON.stringify(results)
+    );
+
+    setSubmitted(true);
+
+    setTimeout(() => {
+      window.location.href = "/skill-gap";
+    }, 1200);
+  };
+
+  const progress =
+    ((currentQuestion + 1) / questions.length) * 100;
+
+  if (submitted) {
+    return (
+      <div className="assessment-page">
+        <header className="assessment-navbar">
+          <button
+            className="assessment-brand"
+            onClick={() =>
+              (window.location.href = "/skill-assessment")
+            }
+          >
+            <div className="assessment-logo">S</div>
+
+            <div>
+              <div className="assessment-brand-name">
+                SkillSaarthi
+              </div>
+
+              <div className="assessment-powered">
+                POWERED BY XCEED
+              </div>
+            </div>
+          </button>
+        </header>
+
+        <main className="assessment-result-screen">
+          <div className="result-icon">✓</div>
+
+          <div className="assessment-badge">
+            Assessment Complete
+          </div>
+
+          <h1>Your assessment is complete</h1>
+
+          <p>
+            We're analysing your responses to identify your
+            strengths and skill gaps.
+          </p>
+
+          <div className="result-loading">
+            <div className="result-loading-bar"></div>
+          </div>
+
+          <span className="result-redirect">
+            Taking you to your Skill Gap Analysis...
+          </span>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="assessment-page">
 
-      {/* Navbar */}
+      {/* =========================
+          NAVBAR
+      ========================= */}
+
       <header className="assessment-navbar">
-        <div className="assessment-brand">
-          <div className="assessment-logo">S</div>
+
+        <button
+          className="assessment-brand"
+          onClick={() =>
+            (window.location.href = "/onboarding")
+          }
+        >
+          <div className="assessment-logo">
+            S
+          </div>
 
           <div>
             <div className="assessment-brand-name">
@@ -35,170 +337,211 @@ function SkillAssessment() {
             </div>
 
             <div className="assessment-powered">
-              Powered by XCEED
+              POWERED BY XCEED
             </div>
           </div>
+        </button>
+
+        <div className="assessment-role">
+          <span>ROLE</span>
+          <strong>Statistical Investigator</strong>
         </div>
+
       </header>
 
-      {/* Main */}
-      <main className="assessment-main">
+      {/* =========================
+          MAIN
+      ========================= */}
 
-        {/* Hero */}
-        <section className="assessment-hero">
+      <main className="assessment-question-container">
 
-          <div className="assessment-badge">
-            AI-Powered Assessment
+        {/* Progress Header */}
+
+        <div className="assessment-progress-header">
+
+          <div>
+            <span className="progress-label">
+              AI-POWERED SKILL ASSESSMENT
+            </span>
+
+            <h1>Assess your current skills</h1>
           </div>
 
-          <h1>
-            Skill Assessment
-          </h1>
+          <div className="question-counter">
+            <strong>
+              {String(currentQuestion + 1).padStart(2, "0")}
+            </strong>
 
-          <p className="assessment-description">
-            A short adaptive assessment that maps your current
-            competencies for the Statistical Investigator role and
-            builds the foundation of your AI Skill Twin.
+            <span>
+              / {String(questions.length).padStart(2, "0")}
+            </span>
+          </div>
+
+        </div>
+
+        {/* Progress Bar */}
+
+        <div className="progress-track">
+          <div
+            className="progress-fill"
+            style={{
+              width: `${progress}%`,
+            }}
+          ></div>
+        </div>
+
+        <div className="progress-info">
+          <span>
+            Question {currentQuestion + 1} of{" "}
+            {questions.length}
+          </span>
+
+          <span>
+            {Math.round(progress)}% complete
+          </span>
+        </div>
+
+        {/* Question Card */}
+
+        <section className="question-card">
+
+          <div className="question-top">
+
+            <span className="competency-badge">
+              {question.competency}
+            </span>
+
+            <span className="adaptive-label">
+              ✦ Adaptive Assessment
+            </span>
+
+          </div>
+
+          <div className="question-number">
+            QUESTION {String(question.id).padStart(2, "0")}
+          </div>
+
+          <h2>
+            {question.question}
+          </h2>
+
+          <p className="question-instruction">
+            Select the option that you believe is most
+            appropriate.
           </p>
 
-          <p className="assessment-note">
-            This assessment is designed to understand your learning
-            needs.
-          </p>
+          {/* Options */}
 
-          <p className="assessment-disclaimer">
-            It is not an employment or performance evaluation.
-            Results are used only to personalise your learning path.
-          </p>
+          <div className="options-list">
+
+            {question.options.map((option, index) => {
+
+              const isSelected =
+                answers[question.id] === index;
+
+              return (
+                <button
+                  key={index}
+                  className={`assessment-option ${
+                    isSelected ? "selected" : ""
+                  }`}
+                  onClick={() =>
+                    selectAnswer(index)
+                  }
+                >
+
+                  <span className="option-letter">
+                    {String.fromCharCode(65 + index)}
+                  </span>
+
+                  <span className="option-text">
+                    {option}
+                  </span>
+
+                  <span className="option-radio">
+                    {isSelected ? "✓" : ""}
+                  </span>
+
+                </button>
+              );
+            })}
+
+          </div>
+
         </section>
 
-        {/* Assessment Card */}
-        <section className="assessment-card">
+        {/* Bottom Controls */}
 
-          <div className="assessment-card-header">
-            <div>
-              <span className="section-label">
-                Assessment Overview
-              </span>
+        <div className="assessment-navigation">
 
-              <h2>
-                Adaptive Competency Assessment
-              </h2>
-            </div>
+          <button
+            className="previous-button"
+            onClick={handlePrevious}
+            disabled={currentQuestion === 0}
+          >
+            ← Previous
+          </button>
 
-            <div className="official-badge">
-              Official Statistics
-            </div>
-          </div>
+          <div className="question-dots">
 
-          {/* Stats */}
-          <div className="assessment-stats">
-
-            <div className="assessment-stat">
-              <span className="stat-label">
-                Role
-              </span>
-
-              <strong>
-                Statistical Investigator
-              </strong>
-            </div>
-
-            <div className="assessment-stat">
-              <span className="stat-label">
-                Skills assessed
-              </span>
-
-              <strong>
-                6 competencies
-              </strong>
-            </div>
-
-            <div className="assessment-stat">
-              <span className="stat-label">
-                Questions
-              </span>
-
-              <strong>
-                10 questions
-              </strong>
-            </div>
-
-            <div className="assessment-stat">
-              <span className="stat-label">
-                Estimated time
-              </span>
-
-              <strong>
-                5–7 minutes
-              </strong>
-            </div>
+            {questions.map((item, index) => (
+              <button
+                key={item.id}
+                className={`question-dot ${
+                  index === currentQuestion
+                    ? "active"
+                    : answers[item.id] !== undefined
+                    ? "answered"
+                    : ""
+                }`}
+                onClick={() => setCurrentQuestion(index)}
+                aria-label={`Go to question ${index + 1}`}
+              >
+                {index + 1}
+              </button>
+            ))}
 
           </div>
 
-          {/* Competencies */}
-          <div className="competency-section">
-
-            <h3>
-              Competencies covered
-            </h3>
-
-            <div className="competency-grid">
-
-              {competencies.map((skill, index) => (
-                <div
-                  className="competency-item"
-                  key={index}
-                >
-                  <span className="competency-check">
-                    ✓
-                  </span>
-
-                  <span>
-                    {skill}
-                  </span>
-                </div>
-              ))}
-
-            </div>
-
-          </div>
-
-          {/* Actions */}
-          <div className="assessment-actions">
-
+          {currentQuestion === questions.length - 1 ? (
             <button
-              className="back-button"
-              onClick={handleBack}
+              className="next-button submit-button"
+              onClick={handleSubmit}
             >
-              ← Back to Dashboard
+              Submit Assessment
+              <span>✓</span>
             </button>
-
+          ) : (
             <button
-              className="start-button"
-              onClick={handleStart}
+              className="next-button"
+              onClick={handleNext}
             >
-              Start Assessment
+              Next
               <span>→</span>
             </button>
-
-          </div>
-
-          {started && (
-            <div className="assessment-started">
-              Assessment started. Your questions will appear here.
-            </div>
           )}
 
-        </section>
+        </div>
+
+        {/* Disclaimer */}
+
+        <div className="assessment-disclaimer-box">
+          <span>ⓘ</span>
+
+          <p>
+            This assessment is designed only to understand
+            your learning needs. It is not an employment or
+            performance evaluation. Your responses are used
+            to personalise your learning journey.
+          </p>
+        </div>
 
       </main>
 
-      {/* Footer */}
       <footer className="assessment-footer">
         <span>SkillSaarthi</span>
         <span>·</span>
-        <span>SIH Prototype</span>
+        <span>SIH 2026 Prototype</span>
       </footer>
 
     </div>

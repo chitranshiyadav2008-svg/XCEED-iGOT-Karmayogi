@@ -86,6 +86,10 @@ export default function Onboarding() {
 
     if (data.success) {
       setSubmitted(true);
+
+setTimeout(() => {
+  window.location.href = "/skill-assessment";
+}, 800);
     } else {
       console.error("Backend error:", data);
     }
