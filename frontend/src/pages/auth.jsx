@@ -1,493 +1,225 @@
 import React, { useState } from "react";
 import "./auth.css";
 
-function Auth() {
+const API_URL = "http://localhost:5000/api/auth";
+
+export default function Auth() {
   const [mode, setMode] = useState("login");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [loginData, setLoginData] = useState({
-    employeeId: "",
-    password: "",
-    remember: true,
-  });
-
-  const [signupData, setSignupData] = useState({
-    fullName: "",
-    employeeId: "",
-    experience: "",
+  const [formData, setFormData] = useState({
+    name: "",
     email: "",
-    department: "",
-    role: "",
     password: "",
-    confirmPassword: "",
-    terms: false,
+    employeeId: ""
   });
 
-  const goToOnboarding = () => {
-    window.location.href = "/onboarding";
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value
+    }));
   };
 
-  const handleLogin = (e) => {
-  e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  if (!loginData.employeeId || !loginData.password) {
-    alert("Please enter your Employee ID/Email and Password.");
-    return;
-  }
+    setLoading(true);
+    setMessage("");
+    setError("");
 
-  const savedEmployeeId = localStorage.getItem("xceedEmployeeId");
-  const savedEmployeeName = localStorage.getItem("xceedEmployeeName");
+    const endpoint =
+      mode === "login"
+        ? `${API_URL}/login`
+        : `${API_URL}/signup`;
 
-  if (!savedEmployeeId) {
-    alert("Account not found. Please create an account first.");
-    return;
-  }
+    const body =
+      mode === "login"
+        ? {
+            email: formData.email,
+            password: formData.password
+          }
+        : {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            employeeId: formData.employeeId
+          };
 
-  if (loginData.employeeId !== savedEmployeeId) {
-    alert("Account not found. Please create an account first.");
-    return;
-  }
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
 
-  localStorage.setItem("xceedLoggedIn", "true");
+      const data = await response.json();
 
-  if (savedEmployeeName) {
-    localStorage.setItem("xceedEmployeeName", savedEmployeeName);
-  }
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong.");
+      }
 
-  goToOnboarding();
-};
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-    const handleSignup = (e) => {
-    e.preventDefault();
+      setMessage(data.message);
 
-    if (
-      !signupData.fullName ||
-      !signupData.employeeId ||
-      !signupData.experience ||
-      !signupData.email ||
-      !signupData.department ||
-      !signupData.role ||
-      !signupData.password ||
-      !signupData.confirmPassword
-    ) {
-      alert("Please fill in all required fields.");
-      return;
+      setTimeout(() => {
+        window.location.href = "/onboarding";
+      }, 700);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
-
-    if (signupData.password !== signupData.confirmPassword) {
-      alert("Passwords do not match.");
-      return;
-    }
-
-    if (!signupData.terms) {
-      alert("Please agree to the terms of use.");
-      return;
-    }
-
-    // Save account details for this prototype
-    localStorage.setItem("xceedLoggedIn", "true");
-    localStorage.setItem("xceedEmployeeName", signupData.fullName);
-    localStorage.setItem("xceedEmployeeId", signupData.employeeId);
-    localStorage.setItem("xceedEmployeeDepartment", signupData.department);
-    localStorage.setItem("xceedEmployeeRole", signupData.role);
-
-    goToOnboarding();
-  };
-
-  const handleDemo = () => {
-    localStorage.setItem("xceedDemoMode", "true");
-    localStorage.setItem("xceedLoggedIn", "true");
-
-    goToOnboarding();
   };
 
   return (
     <div className="auth-page">
+      <div className="auth-card">
+        <div className="auth-brand">
+          <div className="auth-logo">S</div>
 
-      {/* Top Brand */}
-      <header className="auth-header">
-        <button
-          className="auth-brand"
-          onClick={() => (window.location.href = "/")}
-        >
-          <div className="auth-logo">
-            <span>◉</span>
+          <div>
+            <h1>SkillSaarthi</h1>
+            <p>AI Skill Intelligence Platform</p>
           </div>
+        </div>
 
-          <div className="auth-brand-text">
-            <div className="auth-brand-name">SkillSaarthi</div>
-            <div className="auth-powered">POWERED BY XCEED</div>
-          </div>
-        </button>
-      </header>
+        <div className="auth-heading">
+          <h2>
+            {mode === "login"
+              ? "Welcome back"
+              : "Create your account"}
+          </h2>
 
-      {/* LOGIN */}
-      {mode === "login" && (
-        <main className="auth-container">
-          <section className="auth-card login-card">
+          <p>
+            {mode === "login"
+              ? "Sign in to continue your learning journey."
+              : "Start building your personalised Skill Twin."}
+          </p>
+        </div>
 
-            <div className="auth-heading">
-              <h1>Welcome back</h1>
-              <p>Sign in to continue your learning journey.</p>
-            </div>
+        <div className="auth-tabs">
+          <button
+            type="button"
+            className={mode === "login" ? "active" : ""}
+            onClick={() => {
+              setMode("login");
+              setError("");
+              setMessage("");
+            }}
+          >
+            Sign In
+          </button>
 
-            <form onSubmit={handleLogin}>
+          <button
+            type="button"
+            className={mode === "signup" ? "active" : ""}
+            onClick={() => {
+              setMode("signup");
+              setError("");
+              setMessage("");
+            }}
+          >
+            Sign Up
+          </button>
+        </div>
 
-              <div className="auth-field">
-                <label>Employee ID or Email</label>
+        <form onSubmit={handleSubmit}>
+          {mode === "signup" && (
+            <>
+              <label htmlFor="name">Full name</label>
 
-                <input
-                  type="text"
-                  placeholder="MOSPI-2481 or name@gov.in"
-                  value={loginData.employeeId}
-                  onChange={(e) =>
-                    setLoginData({
-                      ...loginData,
-                      employeeId: e.target.value,
-                    })
-                  }
-                />
-              </div>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Enter your full name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
 
-              <div className="auth-field">
-                <label>Password</label>
+              <label htmlFor="employeeId">Employee ID</label>
 
-                <div className="password-wrapper">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    value={loginData.password}
-                    onChange={(e) =>
-                      setLoginData({
-                        ...loginData,
-                        password: e.target.value,
-                      })
-                    }
-                  />
+              <input
+                id="employeeId"
+                name="employeeId"
+                type="text"
+                placeholder="Enter your employee ID"
+                value={formData.employeeId}
+                onChange={handleChange}
+              />
+            </>
+          )}
 
-                  <button
-                    type="button"
-                    className="password-eye"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? "◉" : "◉"}
-                  </button>
-                </div>
-              </div>
+          <label htmlFor="email">Email address</label>
 
-              <div className="login-options">
+          <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Enter your email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
 
-                <label className="remember-option">
-                  <input
-                    type="checkbox"
-                    checked={loginData.remember}
-                    onChange={(e) =>
-                      setLoginData({
-                        ...loginData,
-                        remember: e.target.checked,
-                      })
-                    }
-                  />
-                  <span>Remember me</span>
-                </label>
+          <label htmlFor="password">Password</label>
 
-                <button
-                  type="button"
-                  className="forgot-button"
-                  onClick={() =>
-                    alert("Password recovery will be connected to the backend.")
-                  }
-                >
-                  Forgot password?
-                </button>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Enter your password"
+            value={formData.password}
+            onChange={handleChange}
+            minLength="6"
+            required
+          />
 
-              </div>
+          {error && <p className="auth-error">{error}</p>}
 
-              <button className="primary-auth-button" type="submit">
-                Sign In
-              </button>
+          {message && <p className="auth-success">{message}</p>}
 
-            </form>
-            <div className="switch-auth">
-              <span>New to SkillSaarthi?</span>
+          <button
+            className="auth-submit"
+            type="submit"
+            disabled={loading}
+          >
+            {loading
+              ? "Please wait..."
+              : mode === "login"
+              ? "Sign In"
+              : "Create Account"}
+          </button>
+        </form>
 
-              <button
-                onClick={() => setMode("signup")}
-              >
-                Create an account
-              </button>
-            </div>
+        <p className="auth-switch">
+          {mode === "login"
+            ? "Don't have an account?"
+            : "Already have an account?"}
 
-          </section>
-        </main>
-      )}
-
-      {/* SIGNUP */}
-      {mode === "signup" && (
-        <main className="auth-container signup-container">
-          <section className="auth-card signup-card">
-
-            <div className="auth-heading signup-heading">
-              <h1>Create your SkillSaarthi profile</h1>
-              <p>
-                A few details so we can benchmark you against the right role.
-              </p>
-            </div>
-
-            <form onSubmit={handleSignup}>
-
-              {/* Full Name */}
-              <div className="auth-field">
-                <label>Full Name</label>
-
-                <input
-                  type="text"
-                  placeholder="Anjali Sharma"
-                  value={signupData.fullName}
-                  onChange={(e) =>
-                    setSignupData({
-                      ...signupData,
-                      fullName: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              {/* Employee ID + Experience */}
-              <div className="two-column">
-
-                <div className="auth-field">
-                  <label>Employee ID</label>
-
-                  <input
-                    type="text"
-                    placeholder="MOSPI-2481"
-                    value={signupData.employeeId}
-                    onChange={(e) =>
-                      setSignupData({
-                        ...signupData,
-                        employeeId: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-
-                <div className="auth-field">
-                  <label>Years of Experience</label>
-
-                  <select
-                    value={signupData.experience}
-                    onChange={(e) =>
-                      setSignupData({
-                        ...signupData,
-                        experience: e.target.value,
-                      })
-                    }
-                  >
-                    <option value="">Select</option>
-                    <option value="0-1">0–1 years</option>
-                    <option value="1-3">1–3 years</option>
-                    <option value="3-5">3–5 years</option>
-                    <option value="5-10">5–10 years</option>
-                    <option value="10+">10+ years</option>
-                  </select>
-                </div>
-
-              </div>
-
-              {/* Email */}
-              <div className="auth-field">
-                <label>Official Email</label>
-
-                <input
-                  type="email"
-                  placeholder="name@gov.in"
-                  value={signupData.email}
-                  onChange={(e) =>
-                    setSignupData({
-                      ...signupData,
-                      email: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              {/* Department */}
-              <div className="auth-field">
-                <label>Department</label>
-
-                <select
-                  value={signupData.department}
-                  onChange={(e) =>
-                    setSignupData({
-                      ...signupData,
-                      department: e.target.value,
-                    })
-                  }
-                >
-                  <option value="">Select department</option>
-                  <option value="MoSPI">
-                    Ministry of Statistics & Programme Implementation
-                  </option>
-                  <option value="MoE">Ministry of Education</option>
-                  <option value="MoHFW">
-                    Ministry of Health & Family Welfare
-                  </option>
-                  <option value="MeitY">
-                    Ministry of Electronics & Information Technology
-                  </option>
-                  <option value="Other Government Department">
-                    Other Government Department
-                  </option>
-                </select>
-              </div>
-
-              {/* Role */}
-              <div className="auth-field">
-                <label>Role / Designation</label>
-
-                <select
-                  value={signupData.role}
-                  onChange={(e) =>
-                    setSignupData({
-                      ...signupData,
-                      role: e.target.value,
-                    })
-                  }
-                >
-                  <option value="">Select role</option>
-                  <option value="Statistical Investigator">
-                    Statistical Investigator
-                  </option>
-                  <option value="Data Analyst">
-                    Data Analyst
-                  </option>
-                  <option value="Policy Analyst">
-                    Policy Analyst
-                  </option>
-                  <option value="Program Officer">
-                    Program Officer
-                  </option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-
-              {/* Password + Confirm Password */}
-              <div className="two-column">
-
-                <div className="auth-field">
-                  <label>Password</label>
-
-                  <div className="password-wrapper">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      value={signupData.password}
-                      onChange={(e) =>
-                        setSignupData({
-                          ...signupData,
-                          password: e.target.value,
-                        })
-                      }
-                    />
-
-                    <button
-                      type="button"
-                      className="password-eye"
-                      onClick={() =>
-                        setShowPassword(!showPassword)
-                      }
-                    >
-                      ◉
-                    </button>
-                  </div>
-                </div>
-
-                <div className="auth-field">
-                  <label>Confirm Password</label>
-
-                  <div className="password-wrapper">
-                    <input
-                      type={showConfirmPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      value={signupData.confirmPassword}
-                      onChange={(e) =>
-                        setSignupData({
-                          ...signupData,
-                          confirmPassword: e.target.value,
-                        })
-                      }
-                    />
-
-                    <button
-                      type="button"
-                      className="password-eye"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                    >
-                      ◉
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Terms */}
-              <label className="terms-option">
-
-                <input
-                  type="checkbox"
-                  checked={signupData.terms}
-                  onChange={(e) =>
-                    setSignupData({
-                      ...signupData,
-                      terms: e.target.checked,
-                    })
-                  }
-                />
-
-                <span>
-                  I agree to the terms of use and consent to my
-                  competency data being used for training
-                  recommendations.
-                </span>
-
-              </label>
-
-              {/* Create Profile */}
-              <button
-                className="primary-auth-button"
-                type="submit"
-              >
-                Create Profile
-              </button>
-
-            </form>
-
-            <div className="switch-auth signup-switch">
-              <span>Already have a SkillSaarthi account?</span>
-
-              <button
-                onClick={() => setMode("login")}
-              >
-                Sign in
-              </button>
-            </div>
-
-          </section>
-        </main>
-      )}
-
-      <footer className="auth-footer">
-        <span>SkillSaarthi</span>
-        <span>·</span>
-        <span>SIH Prototype</span>
-      </footer>
-
+          <button
+            type="button"
+            onClick={() => {
+              setMode(mode === "login" ? "signup" : "login");
+              setError("");
+              setMessage("");
+            }}
+          >
+            {mode === "login" ? "Sign Up" : "Sign In"}
+          </button>
+        </p>
+      </div>
     </div>
   );
 }
-
-export default Auth;

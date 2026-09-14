@@ -1,475 +1,375 @@
-* {
-  box-sizing: border-box;
-}
+/* ================================
+   SKILLSAARTHI AUTH PAGE
+   ================================ */
 
 .auth-page {
   min-height: 100vh;
-  background-color: #f8fafc;
-  background-image:
-    linear-gradient(rgba(37, 99, 235, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37, 99, 235, 0.08) 1px, transparent 1px);
-  background-size: 55px 55px;
-  color: #071735;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  padding-bottom: 40px;
-}
-
-/* =========================
-   HEADER
-========================= */
-
-.auth-header {
   width: 100%;
-  max-width: 1150px;
-  margin: 0 auto;
-  padding: 20px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+
+  background:
+    radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.12), transparent 30%),
+    radial-gradient(circle at 85% 80%, rgba(14, 165, 233, 0.10), transparent 30%),
+    #f7f9fc;
+
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
+
+
+/* ================================
+   MAIN CARD
+   ================================ */
+
+.auth-card {
+  width: 100%;
+  max-width: 470px;
+  background: rgba(255, 255, 255, 0.96);
+
+  border: 1px solid #e7eaf0;
+  border-radius: 24px;
+
+  padding: 38px 42px;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 20px 60px rgba(15, 23, 42, 0.08),
+    0 4px 15px rgba(15, 23, 42, 0.04);
+}
+
+
+/* ================================
+   BRAND
+   ================================ */
 
 .auth-brand {
   display: flex;
   align-items: center;
-  gap: 15px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  padding: 0;
+  gap: 13px;
+  margin-bottom: 34px;
 }
 
 .auth-logo {
-  width: 51px;
-  height: 51px;
-  border-radius: 50%;
-  background: #2864e8;
-  color: white;
+  width: 45px;
+  height: 45px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 23px;
-  font-weight: 700;
+
+  border-radius: 13px;
+
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+
+  color: white;
+  font-size: 22px;
+  font-weight: 800;
+
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.22);
 }
 
-.auth-brand-text {
-  text-align: left;
+.auth-brand h1 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 750;
+  color: #111827;
+  letter-spacing: -0.3px;
 }
 
-.auth-brand-name {
-  font-size: 23px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
+.auth-brand p {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: #7b8190;
 }
 
-.auth-powered {
-  margin-top: 3px;
-  font-size: 11px;
-  letter-spacing: 4px;
-  color: #3f5275;
-  font-weight: 500;
-}
 
-/* =========================
-   CONTAINER
-========================= */
-
-.auth-container {
-  width: 100%;
-  max-width: 1150px;
-  margin: 20px auto 0;
-  padding: 0 30px;
-  display: flex;
-  justify-content: center;
-}
-
-.auth-card {
-  width: 100%;
-  max-width: 560px;
-  background: white;
-  border: 1px solid #dce3ec;
-  border-radius: 32px;
-  box-shadow:
-    0 15px 45px rgba(16, 35, 67, 0.07),
-    0 2px 8px rgba(16, 35, 67, 0.04);
-}
-
-.login-card {
-  padding: 36px;
-}
-
-.signup-container {
-  margin-top: 5px;
-}
-
-.signup-card {
-  max-width: 900px;
-  padding: 32px 36px;
-}
-
-/* =========================
-   HEADINGS
-========================= */
+/* ================================
+   HEADING
+   ================================ */
 
 .auth-heading {
-  margin-bottom: 36px;
+  margin-bottom: 26px;
 }
 
-.auth-heading h1 {
+.auth-heading h2 {
   margin: 0 0 8px;
-  font-size: 32px;
+
+  color: #111827;
+
+  font-size: 29px;
   line-height: 1.2;
-  font-weight: 600;
-  letter-spacing: -1px;
+  font-weight: 750;
+
+  letter-spacing: -0.7px;
 }
 
 .auth-heading p {
   margin: 0;
-  color: #536784;
-  font-size: 18px;
-  line-height: 1.5;
+
+  color: #6b7280;
+
+  font-size: 14px;
+  line-height: 1.6;
 }
 
-.signup-heading {
-  margin-bottom: 28px;
-}
 
-.signup-heading h1 {
-  font-size: 30px;
-}
+/* ================================
+   SIGN IN / SIGN UP TABS
+   ================================ */
 
-.signup-heading p {
-  max-width: 650px;
-}
-
-/* =========================
-   FORM
-========================= */
-
-.auth-field {
-  margin-bottom: 22px;
-}
-
-.auth-field label {
-  display: block;
-  margin-bottom: 9px;
-  color: #071735;
-  font-size: 17px;
-  font-weight: 500;
-}
-
-.auth-field input,
-.auth-field select {
+.auth-tabs {
   width: 100%;
-  height: 53px;
-  border: 1px solid #d6dfe9;
-  border-radius: 28px;
-  background: #f8fafc;
-  padding: 0 18px;
-  font-size: 17px;
-  color: #0c1d3d;
-  outline: none;
-  transition: 0.2s ease;
-}
 
-.auth-field input::placeholder {
-  color: #8391a6;
-}
-
-.auth-field select {
-  appearance: auto;
-  cursor: pointer;
-}
-
-.auth-field input:focus,
-.auth-field select:focus {
-  border-color: #2864e8;
-  box-shadow: 0 0 0 3px rgba(40, 100, 232, 0.1);
-  background: white;
-}
-
-/* =========================
-   TWO COLUMNS
-========================= */
-
-.two-column {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+
+  padding: 4px;
+
+  margin-bottom: 25px;
+
+  background: #f1f3f7;
+
+  border-radius: 12px;
+
+  box-sizing: border-box;
 }
 
-/* =========================
-   PASSWORD
-========================= */
-
-.password-wrapper {
-  position: relative;
-}
-
-.password-wrapper input {
-  padding-right: 52px;
-}
-
-.password-eye {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
+.auth-tabs button {
   border: none;
+  outline: none;
+
+  padding: 11px 10px;
+
+  border-radius: 9px;
+
   background: transparent;
-  color: #65758e;
-  cursor: pointer;
-  font-size: 18px;
-}
 
-/* =========================
-   LOGIN OPTIONS
-========================= */
+  color: #6b7280;
 
-.login-options {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 3px 0 22px;
-}
-
-.remember-option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #63728a;
-  font-size: 17px;
-  cursor: pointer;
-}
-
-.remember-option input {
-  width: 20px;
-  height: 20px;
-  accent-color: #2864e8;
-  cursor: pointer;
-}
-
-.forgot-button {
-  border: none;
-  background: transparent;
-  color: #165bea;
-  font-size: 17px;
-  cursor: pointer;
-  padding: 0;
-}
-
-/* =========================
-   PRIMARY BUTTON
-========================= */
-
-.primary-auth-button {
-  width: 100%;
-  height: 55px;
-  border: none;
-  border-radius: 27px;
-  background: #2864e8;
-  color: white;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s ease;
-  box-shadow: 0 8px 18px rgba(40, 100, 232, 0.15);
-}
-
-.primary-auth-button:hover {
-  background: #1f57d1;
-  transform: translateY(-1px);
-}
-
-/* =========================
-   DIVIDER
-========================= */
-
-.auth-divider {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin: 28px 0;
-}
-
-.auth-divider span {
-  flex: 1;
-  height: 1px;
-  background: #d7dfe8;
-}
-
-.auth-divider p {
-  margin: 0;
-  color: #63728a;
   font-size: 14px;
-}
+  font-weight: 600;
 
-/* =========================
-   DEMO BUTTON
-========================= */
-
-.demo-button {
-  width: 100%;
-  height: 59px;
-  border: 2px solid #2864e8;
-  border-radius: 23px;
-  background: #e7efff;
-  color: #1d5de2;
-  font-size: 18px;
-  font-weight: 500;
   cursor: pointer;
-  transition: 0.2s ease;
+
+  transition: all 0.2s ease;
 }
 
-.demo-button:hover {
-  background: #dbe8ff;
+.auth-tabs button:hover {
+  color: #374151;
 }
 
-.demo-icon {
-  margin-right: 8px;
-  font-size: 17px;
+.auth-tabs button.active {
+  background: white;
+
+  color: #4338ca;
+
+  box-shadow: 0 2px 7px rgba(15, 23, 42, 0.08);
 }
 
-.demo-description {
+
+/* ================================
+   FORM
+   ================================ */
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-card label {
+  margin-bottom: 7px;
+
+  color: #374151;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-card input {
+  width: 100%;
+
+  height: 48px;
+
+  padding: 0 14px;
+
+  margin-bottom: 18px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #dfe3ea;
+  border-radius: 11px;
+
+  outline: none;
+
+  background: #ffffff;
+
+  color: #111827;
+
+  font-size: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.auth-card input::placeholder {
+  color: #a1a7b2;
+}
+
+.auth-card input:hover {
+  border-color: #c7ccd6;
+}
+
+.auth-card input:focus {
+  border-color: #6366f1;
+
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.10);
+
+  background: #fff;
+}
+
+
+/* ================================
+   ERROR / SUCCESS
+   ================================ */
+
+.auth-error {
+  margin: -5px 0 15px;
+
+  padding: 10px 12px;
+
+  border-radius: 9px;
+
+  background: #fff1f2;
+
+  color: #be123c;
+
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.auth-success {
+  margin: -5px 0 15px;
+
+  padding: 10px 12px;
+
+  border-radius: 9px;
+
+  background: #f0fdf4;
+
+  color: #15803d;
+
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+
+/* ================================
+   SUBMIT BUTTON
+   ================================ */
+
+.auth-submit {
+  width: 100%;
+
+  height: 49px;
+
+  border: none;
+  border-radius: 11px;
+
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+
+  color: white;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow: 0 8px 18px rgba(79, 70, 229, 0.20);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.auth-submit:hover {
+  transform: translateY(-1px);
+
+  box-shadow: 0 11px 24px rgba(79, 70, 229, 0.25);
+}
+
+.auth-submit:active {
+  transform: translateY(0);
+}
+
+.auth-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* ================================
+   BOTTOM SWITCH
+   ================================ */
+
+.auth-switch {
+  margin: 24px 0 0;
+
   text-align: center;
-  margin: 10px 0 28px;
-  color: #63728a;
-  font-size: 15px;
+
+  color: #7b8190;
+
+  font-size: 13px;
 }
 
-/* =========================
-   SWITCH LOGIN / SIGNUP
-========================= */
+.auth-switch button {
+  margin-left: 5px;
 
-.switch-auth {
-  text-align: center;
-  color: #63728a;
-  font-size: 17px;
-}
-
-.switch-auth button {
   border: none;
   background: transparent;
-  color: #165bea;
-  font-size: 17px;
-  font-weight: 600;
+
+  color: #4f46e5;
+
+  font-size: 13px;
+  font-weight: 700;
+
   cursor: pointer;
-  margin-left: 4px;
-  padding: 0;
 }
 
-.switch-auth button:hover {
+.auth-switch button:hover {
   text-decoration: underline;
 }
 
-.signup-switch {
-  margin-top: 24px;
-}
 
-/* =========================
-   TERMS
-========================= */
-
-.terms-option {
-  display: flex;
-  align-items: flex-start;
-  gap: 13px;
-  margin: 5px 0 24px;
-  color: #63728a;
-  font-size: 17px;
-  line-height: 1.5;
-  cursor: pointer;
-}
-
-.terms-option input {
-  width: 18px;
-  height: 18px;
-  margin-top: 4px;
-  flex-shrink: 0;
-  accent-color: #2864e8;
-  cursor: pointer;
-}
-
-/* =========================
-   FOOTER
-========================= */
-
-.auth-footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  color: #75839a;
-  font-size: 13px;
-  margin-top: 30px;
-}
-
-/* =========================
+/* ================================
    RESPONSIVE
-========================= */
+   ================================ */
 
-@media (max-width: 700px) {
-  .auth-header {
-    padding: 18px 20px;
-  }
-
-  .auth-container {
-    padding: 0 15px;
-    margin-top: 10px;
-  }
-
-  .login-card,
-  .signup-card {
-    padding: 28px 22px;
-    border-radius: 25px;
-  }
-
-  .auth-heading h1,
-  .signup-heading h1 {
-    font-size: 27px;
-  }
-
-  .auth-heading p {
-    font-size: 16px;
-  }
-
-  .two-column {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-
-  .login-options {
+@media (max-width: 600px) {
+  .auth-page {
+    padding: 20px 15px;
     align-items: flex-start;
-    gap: 10px;
+    padding-top: 30px;
   }
 
-  .forgot-button,
-  .remember-option {
-    font-size: 15px;
+  .auth-card {
+    padding: 30px 24px;
+    border-radius: 20px;
   }
 
-  .auth-brand-name {
-    font-size: 21px;
+  .auth-heading h2 {
+    font-size: 25px;
   }
 
-  .auth-powered {
-    font-size: 9px;
-    letter-spacing: 3px;
-  }
-}
-
-@media (max-width: 430px) {
-  .login-options {
-    flex-direction: column;
-  }
-
-  .auth-logo {
-    width: 45px;
-    height: 45px;
-  }
-
-  .auth-brand-name {
-    font-size: 19px;
+  .auth-brand {
+    margin-bottom: 28px;
   }
 }
