@@ -4,8 +4,8 @@ import "./onboarding.css";
 // Mocked employee data — in the real app this will come from the
 // authenticated session / API instead of being hardcoded here.
 const EMPLOYEE = {
-  fullName: "Arzoo Sharma",
-  employeeId: "EMP-4821",
+  fullName: localStorage.getItem("xceedEmployeeName") || "Demo Employee",
+  employeeId: localStorage.getItem("xceedEmployeeId") || "DEMO-0001",
   department: "Ministry of Statistics & Programme Implementation",
   designation: "Data Analyst",
 };
@@ -109,11 +109,36 @@ export default function Onboarding() {
         </div>
 
         <nav className="top-nav">
-          <span className="nav-item">Dashboard</span>
-          <span className="nav-item">My Skills</span>
-          <span className="nav-item">Learning Path</span>
-          <span className="nav-item nav-item--active">Onboarding</span>
-        </nav>
+  <span
+    className="nav-item"
+    onClick={() => {
+      window.location.href = "/auth";
+    }}
+    style={{ cursor: "pointer" }}
+  >
+    Login / Sign Up
+  </span>
+
+  <span
+    className="nav-item"
+    onClick={() => {
+      window.location.href = "/skill-gap";
+    }}
+    style={{ cursor: "pointer" }}
+  >
+    My Skills
+  </span>
+
+  <span
+    className="nav-item"
+    onClick={() => {
+      window.location.href = "/learning-path";
+    }}
+    style={{ cursor: "pointer" }}
+  >
+    Learning Path
+  </span>
+</nav>
       </header>
 
       <main className="onboarding-main">

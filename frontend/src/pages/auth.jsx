@@ -29,21 +29,36 @@ function Auth() {
   };
 
   const handleLogin = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!loginData.employeeId || !loginData.password) {
-      alert("Please enter your Employee ID/Email and Password.");
-      return;
-    }
+  if (!loginData.employeeId || !loginData.password) {
+    alert("Please enter your Employee ID/Email and Password.");
+    return;
+  }
 
-    // Temporary frontend login
-    // Backend authentication can be connected later.
-    localStorage.setItem("xceedLoggedIn", "true");
+  const savedEmployeeId = localStorage.getItem("xceedEmployeeId");
+  const savedEmployeeName = localStorage.getItem("xceedEmployeeName");
 
-    goToOnboarding();
-  };
+  if (!savedEmployeeId) {
+    alert("Account not found. Please create an account first.");
+    return;
+  }
 
-  const handleSignup = (e) => {
+  if (loginData.employeeId !== savedEmployeeId) {
+    alert("Account not found. Please create an account first.");
+    return;
+  }
+
+  localStorage.setItem("xceedLoggedIn", "true");
+
+  if (savedEmployeeName) {
+    localStorage.setItem("xceedEmployeeName", savedEmployeeName);
+  }
+
+  goToOnboarding();
+};
+
+    const handleSignup = (e) => {
     e.preventDefault();
 
     if (
@@ -70,11 +85,12 @@ function Auth() {
       return;
     }
 
-    // Temporary frontend signup
-    // Backend registration can be connected later.
+    // Save account details for this prototype
     localStorage.setItem("xceedLoggedIn", "true");
     localStorage.setItem("xceedEmployeeName", signupData.fullName);
     localStorage.setItem("xceedEmployeeId", signupData.employeeId);
+    localStorage.setItem("xceedEmployeeDepartment", signupData.department);
+    localStorage.setItem("xceedEmployeeRole", signupData.role);
 
     goToOnboarding();
   };
