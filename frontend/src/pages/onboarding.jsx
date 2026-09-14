@@ -3,17 +3,14 @@ import "./onboarding.css";
 
 // Mocked employee data
 const EMPLOYEE = {
-<<<<<<< HEAD
   fullName: localStorage.getItem("xceedEmployeeName") || "Demo Employee",
   employeeId: localStorage.getItem("xceedEmployeeId") || "DEMO-0001",
   department: "Ministry of Statistics & Programme Implementation",
   designation: "Data Analyst",
-=======
 fullName: "Arzoo Sharma",
 employeeId: "EMP-4821",
 department: "Ministry of Statistics & Programme Implementation",
 designation: "Data Analyst",
->>>>>>> 1d46bdb (Fixing buggs)
 };
 
 const WORK_AREAS = [
@@ -345,9 +342,7 @@ try {
         </form>
       </main>
     </div>
-=======
     }
->>>>>>> 1d46bdb (Fixing buggs)
   );
 
   const data = await response.json();
