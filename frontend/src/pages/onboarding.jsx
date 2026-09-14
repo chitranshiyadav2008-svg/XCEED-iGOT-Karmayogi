@@ -1,480 +1,711 @@
 import React, { useState } from "react";
 import "./onboarding.css";
 
-const EMPLOYEE = {
-fullName: "Arzoo Sharma",
-employeeId: "EMP-4821",
-department: "Ministry of Statistics & Programme Implementation",
-designation: "Data Analyst",
-};
-
 const WORK_AREAS = [
-"Data Analysis & Statistics",
-"Policy & Governance",
-"IT & Software Development",
-"Finance & Accounts",
-"Human Resources",
-"Administration",
-"Other",
+  "Data Analysis & Statistics",
+  "Policy & Governance",
+  "IT & Software Development",
+  "Finance & Accounts",
+  "Human Resources",
+  "Administration",
+  "Other",
 ];
 
-export default function Onboarding() {
-const [formData, setFormData] = useState({
-primaryArea: "",
-responsibilities: "",
-strengthAreas: [],
-});
-
-const [errors, setErrors] = useState({});
-const [submitted, setSubmitted] = useState(false);
-
-const handleChange = (field) => (e) => {
-setFormData((prev) => ({
-...prev,
-[field]: e.target.value,
-}));
-
-if (errors[field]) {
-  setErrors((prev) => ({
-    ...prev,
-    [field]: undefined,
-  }));
-}
-
-};
-
-const validate = () => {
-const newErrors = {};
-if (!formData.primaryArea) {
-  newErrors.primaryArea =
-    "Please select your primary area of work.";
-}
-
-if (!formData.responsibilities.trim()) {
-  newErrors.responsibilities =
-    "Please describe your current responsibilities.";
-} else if (formData.responsibilities.trim().length < 10) {
-  newErrors.responsibilities =
-    "Please provide a little more detail (at least 10 characters).";
-}
-
-if (formData.strengthAreas.length === 0) {
-  newErrors.strengthAreas =
-    "Please select at least one area you'd like to strengthen.";
-}
-
-setErrors(newErrors);
-
-return Object.keys(newErrors).length === 0;
-
-};
-
-const handleSubmit = async (e) => {
-e.preventDefault();
-
-const isValid = validate();
-
-if (!isValid) {
-  return;
-}
-
-try {
-  const response = await fetch(
-    "http://localhost:5000/api/onboarding",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        employeeId: EMPLOYEE.employeeId,
-        primaryArea: formData.primaryArea,
-        responsibilities: formData.responsibilities,
-        strengthAreas: formData.strengthAreas,
-      }),
-    }
-  );
-
-  const data = await response.json();
-
-  if (!data.success) {
-    console.warn(
-      "Backend did not save onboarding data:",
-      data
-    );
-  }
-} catch (error) {
-  console.warn(
-    "Backend unavailable. Continuing to Skill Assessment.",
-    error
-  );
-}
-
-setSubmitted(true);
-
-setTimeout(() => {
-  window.location.href = "/skill-assessment";
-}, 500);
-
-};
-
-return ( <div className="onboarding-page"> <header className="onboarding-header"> <div className="brand"> <span className="brand-mark" aria-hidden="true"> <CompassIcon /> </span>
-
-
-      <div className="brand-text">
-        <span className="brand-name">SkillSaarthi</span>
-        <span className="brand-subtext">
-          POWERED BY XCEED
-        </span>
-      </div>
-    </div>
-
-    <nav className="top-nav">
-      <span className="nav-item">Dashboard</span>
-      <span className="nav-item">My Skills</span>
-      <span className="nav-item">Learning Path</span>
-      <span className="nav-item nav-item--active">
-        Onboarding
-      </span>
-    </nav>
-  </header>
-
-  <main className="onboarding-main">
-    <ol className="stepper">
-      <li className="step step--active">
-        <span className="step-circle">01</span>
-        <span className="step-label">Profile</span>
-      </li>
-
-      <span className="step-connector" />
-
-      <li className="step">
-        <span className="step-circle">02</span>
-        <span className="step-label">Assessment</span>
-      </li>
-
-      <span className="step-connector" />
-
-      <li className="step">
-        <span className="step-circle">03</span>
-        <span className="step-label">Skill Twin</span>
-      </li>
-    </ol>
-
-    <div className="page-intro">
-      <span className="eyebrow-pill">
-        Step 01 · Employee Onboarding
-      </span>
-
-      <h1>Build Your Skill Profile</h1>
-
-      <p>
-        We&apos;ve prepared your employee profile. Review your
-        information and tell us about your current work so we
-        can personalize your competency journey.
-      </p>
-    </div>
-
-    <form onSubmit={handleSubmit} noValidate>
-      <section className="card">
-        <div className="card-header">
-          <div>
-            <h2>Employee Profile</h2>
-
-            <p className="card-subtext">
-              Retrieved from your SkillSaarthi account
-            </p>
-          </div>
-
-          <span className="verified-badge">
-            <CheckIcon />
-            Employee information verified
-          </span>
-        </div>
-
-        <div className="profile-grid">
-          <ReadOnlyField
-            icon={<UserIcon />}
-            label="Full Name"
-            value={EMPLOYEE.fullName}
-          />
-
-          <ReadOnlyField
-            icon={<IdIcon />}
-            label="Employee ID"
-            value={EMPLOYEE.employeeId}
-          />
-
-          <ReadOnlyField
-            icon={<BuildingIcon />}
-            label="Department / Ministry"
-            value={EMPLOYEE.department}
-          />
-
-          <ReadOnlyField
-            icon={<BriefcaseIcon />}
-            label="Designation"
-            value={EMPLOYEE.designation}
-          />
-        </div>
-      </section>
-
-      <section className="card">
-        <div className="card-header">
-          <div>
-            <h2>Professional Context</h2>
-
-            <p className="card-subtext">
-              Help SkillSaarthi understand the work you currently
-              do.
-            </p>
-          </div>
-        </div>
-
-        <div className="form-field">
-          <label htmlFor="primaryArea">
-            Primary Area of Work{" "}
-            <span className="required">*</span>
-          </label>
-
-          <select
-            id="primaryArea"
-            value={formData.primaryArea}
-            onChange={handleChange("primaryArea")}
-            className={
-              errors.primaryArea ? "input-error" : ""
-            }
-          >
-            <option value="">Select an area</option>
-
-            {WORK_AREAS.map((area) => (
-              <option key={area} value={area}>
-                {area}
-              </option>
-            ))}
-          </select>
-
-          {errors.primaryArea && (
-            <span className="error-text">
-              {errors.primaryArea}
-            </span>
-          )}
-        </div>
-
-        <div className="form-field">
-          <label htmlFor="responsibilities">
-            Current Responsibilities{" "}
-            <span className="required">*</span>
-          </label>
-
-          <textarea
-            id="responsibilities"
-            rows={4}
-            placeholder="Briefly describe what your day-to-day work involves..."
-            value={formData.responsibilities}
-            onChange={handleChange("responsibilities")}
-            className={
-              errors.responsibilities ? "input-error" : ""
-            }
-          />
-
-          {errors.responsibilities && (
-            <span className="error-text">
-              {errors.responsibilities}
-            </span>
-          )}
-        </div>
-
-        <div className="form-field">
-          <label>
-            Areas You&apos;d Like to Strengthen{" "}
-            <span className="required">*</span>
-          </label>
-
-          <p className="field-hint">
-            Select the areas you would like to develop further.
-          </p>
-
-          <div className="strength-options">
-            {[
-              "Data Analysis",
-              "Leadership",
-              "Communication",
-              "Digital Skills",
-              "Policy & Governance",
-              "Project Management",
-              "Problem Solving",
-              "Other",
-            ].map((area) => {
-              const selected =
-                formData.strengthAreas.includes(area);
-
-              return (
-                <button
-                  type="button"
-                  key={area}
-                  className={`strength-option ${
-                    selected ? "selected" : ""
-                  }`}
-                  onClick={() => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      strengthAreas: selected
-                        ? prev.strengthAreas.filter(
-                            (item) => item !== area
-                          )
-                        : [
-                            ...prev.strengthAreas,
-                            area,
-                          ],
-                    }));
-
-                    if (errors.strengthAreas) {
-                      setErrors((prev) => ({
-                        ...prev,
-                        strengthAreas: undefined,
-                      }));
-                    }
-                  }}
-                >
-                  <span className="strength-check">
-                    {selected ? "✓" : "+"}
-                  </span>
-
-                  {area}
-                </button>
-              );
-            })}
-          </div>
-
-          {errors.strengthAreas && (
-            <span className="error-text">
-              {errors.strengthAreas}
-            </span>
-          )}
-        </div>
-      </section>
-
-      {submitted && (
-        <div className="success-banner">
-          Profile saved. You&apos;re ready to move on to the
-          Skill Assessment.
-        </div>
-      )}
-
-      <div className="form-actions">
-        <button
-          type="submit"
-          className="continue-btn"
-        >
-          Continue to Skill Assessment →
-        </button>
-      </div>
-    </form>
-  </main>
-</div>
-
-);
-}
-
-function ReadOnlyField({ icon, label, value }) {
-return ( <div className="readonly-field"> <span className="readonly-icon">{icon}</span>
-
-  <div>
-    <span className="readonly-label">{label}</span>
-    <span className="readonly-value">{value}</span>
-  </div>
-</div>
-
-);
-}
-
-function CompassIcon() {
-return ( <svg
-   viewBox="0 0 24 24"
-   width="20"
-   height="20"
-   fill="none"
-   stroke="currentColor"
-   strokeWidth="2"
- > <circle cx="12" cy="12" r="10" /> <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" /> </svg>
-);
-}
-
-function CheckIcon() {
-return ( <svg
-   viewBox="0 0 24 24"
-   width="14"
-   height="14"
-   fill="none"
-   stroke="currentColor"
-   strokeWidth="3"
- > <polyline points="20 6 9 17 4 12" /> </svg>
-);
-}
+const STRENGTH_OPTIONS = [
+  "Analytical Thinking",
+  "Communication",
+  "Problem Solving",
+  "Leadership",
+  "Teamwork",
+  "Data Interpretation",
+  "Decision Making",
+  "Technical Skills",
+];
 
 function UserIcon() {
-return ( <svg
-   viewBox="0 0 24 24"
-   width="18"
-   height="18"
-   fill="none"
-   stroke="currentColor"
-   strokeWidth="2"
- > <circle cx="12" cy="8" r="4" /> <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" /> </svg>
-);
-}
-
-function IdIcon() {
-return ( <svg
-   viewBox="0 0 24 24"
-   width="18"
-   height="18"
-   fill="none"
-   stroke="currentColor"
-   strokeWidth="2"
- > <rect
-     x="3"
-     y="5"
-     width="18"
-     height="14"
-     rx="2"
-   /> <circle cx="9" cy="12" r="2" /> <path d="M14 10h5M14 14h5" /> </svg>
-);
-}
-
-function BuildingIcon() {
-return ( <svg
-   viewBox="0 0 24 24"
-   width="18"
-   height="18"
-   fill="none"
-   stroke="currentColor"
-   strokeWidth="2"
- > <rect
-     x="4"
-     y="3"
-     width="16"
-     height="18"
-     rx="1"
-   /> <path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 16h1M14 16h1" /> </svg>
-);
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c0-4 3.5-7 8-7s8 3 8 7" />
+    </svg>
+  );
 }
 
 function BriefcaseIcon() {
-return ( <svg
-   viewBox="0 0 24 24"
-   width="18"
-   height="18"
-   fill="none"
-   stroke="currentColor"
-   strokeWidth="2"
- > <rect
-     x="3"
-     y="7"
-     width="18"
-     height="12"
-     rx="2"
-   /> <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /> </svg>
-);
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <rect x="3" y="7" width="18" height="13" rx="2" />
+      <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+      <path d="M3 12h18" />
+    </svg>
+  );
 }
+
+function CheckIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3"
+    >
+      <path d="m5 12 4 4L19 6" />
+    </svg>
+  );
+}
+
+function ArrowIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <path d="M5 12h14" />
+      <path d="m13 6 6 6-6 6" />
+    </svg>
+  );
+}
+
+function Onboarding() {
+  const [user] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user")) || {};
+    } catch {
+      return {};
+    }
+  });
+
+  const employee = {
+    fullName: user.name || "Arzoo Sharma",
+    employeeId: user.employeeId || "EMP-4821",
+    department:
+      user.department ||
+      "Ministry of Statistics & Programme Implementation",
+    designation: user.designation || "Data Analyst",
+  };
+
+  const [formData, setFormData] = useState({
+    primaryArea: "",
+    responsibilities: "",
+    strengthAreas: [],
+  });
+
+  const [errors, setErrors] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+      submit: "",
+    }));
+  };
+
+  const toggleStrength = (strength) => {
+    setFormData((prev) => {
+      const selected = prev.strengthAreas.includes(strength);
+
+      return {
+        ...prev,
+        strengthAreas: selected
+          ? prev.strengthAreas.filter(
+              (item) => item !== strength
+            )
+          : [...prev.strengthAreas, strength],
+      };
+    });
+
+    setErrors((prev) => ({
+      ...prev,
+      strengthAreas: "",
+      submit: "",
+    }));
+  };
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!formData.primaryArea) {
+      newErrors.primaryArea =
+        "Please select your primary work area.";
+    }
+
+    if (!formData.responsibilities.trim()) {
+      newErrors.responsibilities =
+        "Please describe your responsibilities.";
+    } else if (
+      formData.responsibilities.trim().length < 10
+    ) {
+      newErrors.responsibilities =
+        "Please enter at least 10 characters.";
+    }
+
+    if (formData.strengthAreas.length === 0) {
+      newErrors.strengthAreas =
+        "Please select at least one strength area.";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (isSubmitting || submitted) {
+      return;
+    }
+
+    if (!validate()) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setErrors({
+          submit:
+            "Your session has expired. Please sign in again.",
+        });
+
+        setIsSubmitting(false);
+        return;
+      }
+
+      const response = await fetch(
+        "http://localhost:5000/api/onboarding",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            primaryArea: formData.primaryArea,
+            responsibilities: formData.responsibilities,
+            strengthAreas: formData.strengthAreas,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.message ||
+            "Failed to save onboarding information."
+        );
+      }
+
+      console.log(
+        "Onboarding saved successfully:",
+        data
+      );
+
+      setSubmitted(true);
+
+      setTimeout(() => {
+        window.location.href = "/skill-assessment";
+      }, 800);
+    } catch (error) {
+      console.error("Onboarding error:", error);
+
+      setErrors({
+        submit:
+          error.message ||
+          "Unable to save onboarding information. Please try again.",
+      });
+
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="onboarding-page">
+
+      {/* ================= HEADER ================= */}
+
+      <header className="onboarding-header">
+
+        <div className="brand">
+
+          <div className="brand-mark">
+            <span>S</span>
+          </div>
+
+          <div className="brand-text">
+            <div className="brand-name">
+              SkillSaarthi
+            </div>
+
+            <div className="brand-subtext">
+              AI SKILL INTELLIGENCE PLATFORM
+            </div>
+          </div>
+
+        </div>
+
+        <nav className="top-nav">
+          <span className="nav-item nav-item--active">
+            Onboarding
+          </span>
+
+          <span className="nav-item">
+            Skill Assessment
+          </span>
+
+          <span className="nav-item">
+            Skill Twin
+          </span>
+        </nav>
+
+      </header>
+
+      {/* ================= MAIN ================= */}
+
+      <main className="onboarding-main">
+
+        {/* STEPPER */}
+
+        <ul className="stepper">
+
+          <li className="step step--active">
+
+            <div className="step-circle">
+              1
+            </div>
+
+            <span className="step-label">
+              Profile
+            </span>
+
+          </li>
+
+          <li className="step-connector"></li>
+
+          <li className="step">
+
+            <div className="step-circle">
+              2
+            </div>
+
+            <span className="step-label">
+              Assessment
+            </span>
+
+          </li>
+
+          <li className="step-connector"></li>
+
+          <li className="step">
+
+            <div className="step-circle">
+              3
+            </div>
+
+            <span className="step-label">
+              Skill Twin
+            </span>
+
+          </li>
+
+        </ul>
+
+        {/* INTRO */}
+
+        <section className="page-intro">
+
+          <div className="eyebrow-pill">
+            WELCOME TO SKILLSAARTHI
+          </div>
+
+          <h1>
+            Let's build your Skill Twin
+          </h1>
+
+          <p>
+            Tell us a little about your professional
+            role and strengths. This information helps
+            us create your personalised AI Skill Twin.
+          </p>
+
+        </section>
+
+        {/* ================= PROFILE CARD ================= */}
+
+        <section className="card">
+
+          <div className="card-header">
+
+            <div>
+              <h2>Your Profile</h2>
+
+              <p className="card-subtext">
+                Your official information from the
+                government employee profile.
+              </p>
+            </div>
+
+            <div className="verified-badge">
+              <CheckIcon />
+              Verified
+            </div>
+
+          </div>
+
+          <div className="profile-grid">
+
+            {/* NAME */}
+
+            <div className="readonly-field">
+
+              <div className="readonly-icon">
+                <UserIcon />
+              </div>
+
+              <div>
+                <span className="readonly-label">
+                  Full Name
+                </span>
+
+                <span className="readonly-value">
+                  {employee.fullName}
+                </span>
+              </div>
+
+            </div>
+
+            {/* EMPLOYEE ID */}
+
+            <div className="readonly-field">
+
+              <div className="readonly-icon">
+                <UserIcon />
+              </div>
+
+              <div>
+                <span className="readonly-label">
+                  Employee ID
+                </span>
+
+                <span className="readonly-value">
+                  {employee.employeeId}
+                </span>
+              </div>
+
+            </div>
+
+            {/* DEPARTMENT */}
+
+            <div className="readonly-field">
+
+              <div className="readonly-icon">
+                <BriefcaseIcon />
+              </div>
+
+              <div>
+                <span className="readonly-label">
+                  Department
+                </span>
+
+                <span className="readonly-value">
+                  {employee.department}
+                </span>
+              </div>
+
+            </div>
+
+            {/* DESIGNATION */}
+
+            <div className="readonly-field">
+
+              <div className="readonly-icon">
+                <BriefcaseIcon />
+              </div>
+
+              <div>
+                <span className="readonly-label">
+                  Designation
+                </span>
+
+                <span className="readonly-value">
+                  {employee.designation}
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        {/* ================= PROFESSIONAL CONTEXT ================= */}
+
+        <form onSubmit={handleSubmit}>
+
+          <section className="card">
+
+            <div className="card-header">
+
+              <div>
+
+                <h2>
+                  Professional Context
+                </h2>
+
+                <p className="card-subtext">
+                  Help us understand your current
+                  role and responsibilities.
+                </p>
+
+              </div>
+
+            </div>
+
+            {/* PRIMARY WORK AREA */}
+
+            <div className="form-field">
+
+              <label htmlFor="primaryArea">
+
+                Primary Work Area{" "}
+
+                <span className="required">
+                  *
+                </span>
+
+              </label>
+
+              <select
+                id="primaryArea"
+                name="primaryArea"
+                value={formData.primaryArea}
+                onChange={handleInputChange}
+                className={
+                  errors.primaryArea
+                    ? "input-error"
+                    : ""
+                }
+              >
+
+                <option value="">
+                  Select your primary work area
+                </option>
+
+                {WORK_AREAS.map((area) => (
+                  <option
+                    key={area}
+                    value={area}
+                  >
+                    {area}
+                  </option>
+                ))}
+
+              </select>
+
+              {errors.primaryArea && (
+                <span className="error-text">
+                  {errors.primaryArea}
+                </span>
+              )}
+
+            </div>
+
+            {/* RESPONSIBILITIES */}
+
+            <div className="form-field">
+
+              <label htmlFor="responsibilities">
+
+                Key Responsibilities{" "}
+
+                <span className="required">
+                  *
+                </span>
+
+              </label>
+
+              <p className="field-hint">
+                Describe your main responsibilities,
+                tasks and the type of work you handle.
+              </p>
+
+              <textarea
+                id="responsibilities"
+                name="responsibilities"
+                rows="5"
+                value={formData.responsibilities}
+                onChange={handleInputChange}
+                placeholder="Describe your main responsibilities..."
+                className={
+                  errors.responsibilities
+                    ? "input-error"
+                    : ""
+                }
+              />
+
+              <p className="field-hint">
+                {formData.responsibilities.length}
+                {" "}characters · Minimum 10 characters
+              </p>
+
+              {errors.responsibilities && (
+                <span className="error-text">
+                  {errors.responsibilities}
+                </span>
+              )}
+
+            </div>
+
+            {/* STRENGTH AREAS */}
+
+            <div className="form-field">
+
+              <label>
+
+                Your Strength Areas{" "}
+
+                <span className="required">
+                  *
+                </span>
+
+              </label>
+
+              <p className="field-hint">
+                Select all areas where you feel
+                confident.
+              </p>
+
+              <div className="strength-options">
+
+                {STRENGTH_OPTIONS.map((strength) => {
+
+                  const selected =
+                    formData.strengthAreas.includes(
+                      strength
+                    );
+
+                  return (
+                    <button
+                      type="button"
+                      key={strength}
+                      className={`strength-option ${
+                        selected
+                          ? "selected"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        toggleStrength(strength)
+                      }
+                    >
+
+                      <span className="strength-check">
+                        {selected && <CheckIcon />}
+                      </span>
+
+                      {strength}
+
+                    </button>
+                  );
+                })}
+
+              </div>
+
+              {errors.strengthAreas && (
+                <span className="error-text">
+                  {errors.strengthAreas}
+                </span>
+              )}
+
+            </div>
+
+            {/* SUBMIT ERROR */}
+
+            {errors.submit && (
+              <div className="error-text">
+                {errors.submit}
+              </div>
+            )}
+
+            {/* SUCCESS */}
+
+            {submitted && (
+              <div className="success-banner">
+                ✓ Profile information saved!
+                Taking you to Skill Assessment...
+              </div>
+            )}
+
+            {/* ACTION */}
+
+            <div className="form-actions">
+
+              <button
+                type="submit"
+                className="continue-btn"
+                disabled={
+                  isSubmitting || submitted
+                }
+              >
+
+                {isSubmitting
+                  ? "Saving..."
+                  : submitted
+                  ? "Saved ✓"
+                  : "Continue to Skill Assessment"}
+
+                {!isSubmitting &&
+                  !submitted && (
+                    <>
+                      {" "}
+                      <ArrowIcon />
+                    </>
+                  )}
+
+              </button>
+
+            </div>
+
+          </section>
+
+        </form>
+
+      </main>
+
+    </div>
+  );
+}
+
+export default Onboarding;

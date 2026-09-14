@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authMiddleware = require("./middleware/authMiddleware");
 const authRoutes = require("./routes/authRoutes");
-
+const skillAssessmentRoutes = require("./routes/skillAssessmentRoutes");
 dotenv.config();
 
 const app = express();
@@ -16,7 +16,10 @@ app.use(express.json());
 
 // Authentication routes
 app.use("/api/auth", authRoutes);
-
+app.use(
+  "/api/skill-assessment",
+  skillAssessmentRoutes
+);
 // Test route
 app.get("/", (req, res) => {
   res.json({

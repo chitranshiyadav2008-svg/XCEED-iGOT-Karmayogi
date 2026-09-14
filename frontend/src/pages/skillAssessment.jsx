@@ -157,99 +157,99 @@ function SkillAssessment() {
     });
   };
 
-  const handleNext = () => {
-    if (answers[question.id] === undefined) {
-      alert("Please select an answer before continuing.");
-      return;
-    }
+  const handleSubmit = async () => {
+  if (answers[question.id] === undefined) {
+    alert("Please answer the current question before submitting.");
+    return;
+  }
 
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-  };
+  const unansweredQuestions = questions.filter(
+    (item) => answers[item.id] === undefined
+  );
 
-  const handlePrevious = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
+  if (unansweredQuestions.length > 0) {
+    alert(
+      `Please answer all questions before submitting. ${unansweredQuestions.length} question(s) remaining.`
+    );
+    return;
+  }
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-  };
+  const results = calculateResults();
 
-  const calculateResults = () => {
-    let totalCorrect = 0;
+  /*
+    Convert competency scores into the format
+    expected by MongoDB.
+  */
 
-    const competencyResults = {};
+  const skills = Object.keys(results.competencyScores).map(
+    (skillName) => {
+      const score = results.competencyScores[skillName];
 
-    questions.forEach((item) => {
-      const competency = item.competency;
+      let level = "Beginner";
 
-      if (!competencyResults[competency]) {
-        competencyResults[competency] = {
-          correct: 0,
-          total: 0,
-        };
+      if (score >= 80) {
+        level = "Expert";
+      } else if (score >= 65) {
+        level = "Advanced";
+      } else if (score >= 40) {
+        level = "Intermediate";
       }
 
-      competencyResults[competency].total += 1;
+      return {
+        skillName,
+        score,
+        level,
+      };
+    }
+  );
 
-      if (answers[item.id] === item.answer) {
-        totalCorrect += 1;
-        competencyResults[competency].correct += 1;
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("Your login session has expired. Please login again.");
+    window.location.href = "/auth";
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "http://localhost:5000/api/skill-assessment",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+
+        body: JSON.stringify({
+          skills,
+          overallScore: results.overallScore,
+        }),
       }
-    });
-
-    const competencyScores = {};
-
-    Object.keys(competencyResults).forEach((competency) => {
-      const result = competencyResults[competency];
-
-      competencyScores[competency] = Math.round(
-        (result.correct / result.total) * 100
-      );
-    });
-
-    const overallScore = Math.round(
-      (totalCorrect / questions.length) * 100
     );
 
-    return {
-      overallScore,
-      totalCorrect,
-      totalQuestions: questions.length,
-      competencyScores,
-    };
-  };
+    const data = await response.json();
 
-  const handleSubmit = () => {
-    if (answers[question.id] === undefined) {
-      alert("Please answer the current question before submitting.");
-      return;
-    }
-
-    const unansweredQuestions = questions.filter(
-      (item) => answers[item.id] === undefined
-    );
-
-    if (unansweredQuestions.length > 0) {
-      alert(
-        `Please answer all questions before submitting. ${unansweredQuestions.length} question(s) remaining.`
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Failed to save assessment."
       );
-      return;
     }
 
-    const results = calculateResults();
+    /*
+      Keep localStorage as well because
+      the Skill Gap page can use it for now.
+    */
 
     localStorage.setItem(
       "xceedSkillAssessmentResults",
       JSON.stringify(results)
+    );
+
+    console.log(
+      "Assessment saved to MongoDB:",
+      data
     );
 
     setSubmitted(true);
@@ -257,7 +257,18 @@ function SkillAssessment() {
     setTimeout(() => {
       window.location.href = "/skill-gap";
     }, 1200);
-  };
+
+  } catch (error) {
+    console.error(
+      "Assessment submission error:",
+      error
+    );
+
+    alert(
+      "Could not save your assessment. Please make sure the backend is running."
+    );
+  }
+};
 
   const progress =
     ((currentQuestion + 1) / questions.length) * 100;
