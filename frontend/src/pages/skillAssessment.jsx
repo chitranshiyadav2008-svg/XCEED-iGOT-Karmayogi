@@ -150,128 +150,223 @@ function SkillAssessment() {
 
   const question = questions[currentQuestion];
 
+  // =========================
+  // SELECT ANSWER
+  // =========================
+
   const selectAnswer = (optionIndex) => {
-    setAnswers({
-      ...answers,
+    setAnswers((prev) => ({
+      ...prev,
       [question.id]: optionIndex,
-    });
+    }));
   };
 
-  const handleSubmit = async () => {
-  if (answers[question.id] === undefined) {
-    alert("Please answer the current question before submitting.");
-    return;
-  }
+  // =========================
+  // PREVIOUS QUESTION
+  // =========================
 
-  const unansweredQuestions = questions.filter(
-    (item) => answers[item.id] === undefined
-  );
+  const handlePrevious = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion((prev) => prev - 1);
 
-  if (unansweredQuestions.length > 0) {
-    alert(
-      `Please answer all questions before submitting. ${unansweredQuestions.length} question(s) remaining.`
-    );
-    return;
-  }
-
-  const results = calculateResults();
-
-  /*
-    Convert competency scores into the format
-    expected by MongoDB.
-  */
-
-  const skills = Object.keys(results.competencyScores).map(
-    (skillName) => {
-      const score = results.competencyScores[skillName];
-
-      let level = "Beginner";
-
-      if (score >= 80) {
-        level = "Expert";
-      } else if (score >= 65) {
-        level = "Advanced";
-      } else if (score >= 40) {
-        level = "Intermediate";
-      }
-
-      return {
-        skillName,
-        score,
-        level,
-      };
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     }
-  );
+  };
 
-  const token = localStorage.getItem("token");
+  // =========================
+  // NEXT QUESTION
+  // =========================
 
-  if (!token) {
-    alert("Your login session has expired. Please login again.");
-    window.location.href = "/auth";
-    return;
-  }
+  const handleNext = () => {
+    if (answers[question.id] === undefined) {
+      alert("Please select an answer before continuing.");
+      return;
+    }
 
-  try {
-    const response = await fetch(
-      "http://localhost:5000/api/skill-assessment",
-      {
-        method: "POST",
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion((prev) => prev + 1);
 
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
 
-        body: JSON.stringify({
-          skills,
-          overallScore: results.overallScore,
-        }),
+  // =========================
+  // CALCULATE RESULTS
+  // =========================
+
+  const calculateResults = () => {
+    let totalCorrect = 0;
+
+    const competencyResults = {};
+
+    questions.forEach((item) => {
+      const competency = item.competency;
+
+      if (!competencyResults[competency]) {
+        competencyResults[competency] = {
+          correct: 0,
+          total: 0,
+        };
+      }
+
+      competencyResults[competency].total += 1;
+
+      if (answers[item.id] === item.answer) {
+        totalCorrect += 1;
+        competencyResults[competency].correct += 1;
+      }
+    });
+
+    const competencyScores = {};
+
+    Object.keys(competencyResults).forEach((competency) => {
+      const result = competencyResults[competency];
+
+      competencyScores[competency] = Math.round(
+        (result.correct / result.total) * 100
+      );
+    });
+
+    const overallScore = Math.round(
+      (totalCorrect / questions.length) * 100
+    );
+
+    return {
+      overallScore,
+      totalCorrect,
+      totalQuestions: questions.length,
+      competencyScores,
+    };
+  };
+
+  // =========================
+  // SUBMIT ASSESSMENT
+  // =========================
+
+  const handleSubmit = async () => {
+    if (answers[question.id] === undefined) {
+      alert("Please answer the current question before submitting.");
+      return;
+    }
+
+    const unansweredQuestions = questions.filter(
+      (item) => answers[item.id] === undefined
+    );
+
+    if (unansweredQuestions.length > 0) {
+      alert(
+        `Please answer all questions before submitting. ${unansweredQuestions.length} question(s) remaining.`
+      );
+      return;
+    }
+
+    const results = calculateResults();
+
+    // Convert competency scores into MongoDB format
+    const skills = Object.keys(results.competencyScores).map(
+      (skillName) => {
+        const score = results.competencyScores[skillName];
+
+        let level = "Beginner";
+
+        if (score >= 80) {
+          level = "Expert";
+        } else if (score >= 65) {
+          level = "Advanced";
+        } else if (score >= 40) {
+          level = "Intermediate";
+        }
+
+        return {
+          skillName,
+          score,
+          level,
+        };
       }
     );
 
-    const data = await response.json();
+    // Get login token
+    const token = localStorage.getItem("token");
 
-    if (!response.ok) {
-      throw new Error(
-        data.message || "Failed to save assessment."
+    if (!token) {
+      alert(
+        "Your login session has expired. Please login again."
+      );
+
+      window.location.href = "/auth";
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/skill-assessment",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+
+          body: JSON.stringify({
+            skills,
+            overallScore: results.overallScore,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Failed to save assessment."
+        );
+      }
+
+      // Save locally as backup
+      localStorage.setItem(
+        "xceedSkillAssessmentResults",
+        JSON.stringify(results)
+      );
+
+      console.log(
+        "Assessment successfully saved:",
+        data
+      );
+
+      setSubmitted(true);
+
+      setTimeout(() => {
+        window.location.href = "/skill-gap";
+      }, 1200);
+    } catch (error) {
+      console.error(
+        "Assessment submission error:",
+        error
+      );
+
+      alert(
+        "Could not save your assessment. Please make sure the backend is running."
       );
     }
+  };
 
-    /*
-      Keep localStorage as well because
-      the Skill Gap page can use it for now.
-    */
-
-    localStorage.setItem(
-      "xceedSkillAssessmentResults",
-      JSON.stringify(results)
-    );
-
-    console.log(
-      "Assessment saved to MongoDB:",
-      data
-    );
-
-    setSubmitted(true);
-
-    setTimeout(() => {
-      window.location.href = "/skill-gap";
-    }, 1200);
-
-  } catch (error) {
-    console.error(
-      "Assessment submission error:",
-      error
-    );
-
-    alert(
-      "Could not save your assessment. Please make sure the backend is running."
-    );
-  }
-};
+  // =========================
+  // PROGRESS
+  // =========================
 
   const progress =
     ((currentQuestion + 1) / questions.length) * 100;
+
+  // =========================
+  // SUCCESS SCREEN
+  // =========================
 
   if (submitted) {
     return (
@@ -322,6 +417,10 @@ function SkillAssessment() {
       </div>
     );
   }
+
+  // =========================
+  // MAIN SCREEN
+  // =========================
 
   return (
     <div className="assessment-page">
@@ -453,6 +552,7 @@ function SkillAssessment() {
               return (
                 <button
                   key={index}
+                  type="button"
                   className={`assessment-option ${
                     isSelected ? "selected" : ""
                   }`}
@@ -486,6 +586,7 @@ function SkillAssessment() {
         <div className="assessment-navigation">
 
           <button
+            type="button"
             className="previous-button"
             onClick={handlePrevious}
             disabled={currentQuestion === 0}
@@ -498,6 +599,7 @@ function SkillAssessment() {
             {questions.map((item, index) => (
               <button
                 key={item.id}
+                type="button"
                 className={`question-dot ${
                   index === currentQuestion
                     ? "active"
@@ -505,7 +607,9 @@ function SkillAssessment() {
                     ? "answered"
                     : ""
                 }`}
-                onClick={() => setCurrentQuestion(index)}
+                onClick={() =>
+                  setCurrentQuestion(index)
+                }
                 aria-label={`Go to question ${index + 1}`}
               >
                 {index + 1}
@@ -515,21 +619,27 @@ function SkillAssessment() {
           </div>
 
           {currentQuestion === questions.length - 1 ? (
+
             <button
+              type="button"
               className="next-button submit-button"
               onClick={handleSubmit}
             >
               Submit Assessment
               <span>✓</span>
             </button>
+
           ) : (
+
             <button
+              type="button"
               className="next-button"
               onClick={handleNext}
             >
               Next
               <span>→</span>
             </button>
+
           )}
 
         </div>
@@ -537,6 +647,7 @@ function SkillAssessment() {
         {/* Disclaimer */}
 
         <div className="assessment-disclaimer-box">
+
           <span>ⓘ</span>
 
           <p>
@@ -545,6 +656,7 @@ function SkillAssessment() {
             performance evaluation. Your responses are used
             to personalise your learning journey.
           </p>
+
         </div>
 
       </main>
